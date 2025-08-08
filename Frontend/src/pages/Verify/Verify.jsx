@@ -1,5 +1,5 @@
 import "./Verify.css";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom.jsx";
 import axios from "axios";
 
 import { useContext } from "react";
