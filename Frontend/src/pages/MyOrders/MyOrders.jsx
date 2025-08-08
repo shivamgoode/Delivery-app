@@ -3,7 +3,7 @@ import "./MyOrders.css";
 import { useContext, useState } from "react";
 import { StoreContext } from "../../context/StoreContext.jsx";
 import axios from "axios";
-import { assets } from "../../assets/assets.jsx";
+import { assets } from "../../assets/assets.js";
 
 const MyOrders = () => {
   const [data, setData] = useState([]);
