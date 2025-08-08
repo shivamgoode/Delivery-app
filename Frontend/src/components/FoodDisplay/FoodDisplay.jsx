@@ -1,4 +1,4 @@
-import "./foodDisplay.css";
+import "./FoodDisplay.css";
 import { useContext } from "react";
 import { StoreContext } from "../../context/StoreContext.jsx";
 import FoodItem from "../FoodItem/FoodItem.jsx";
