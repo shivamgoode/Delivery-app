@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import "./MyOrders.css";
 import { useContext, useState } from "react";
-import { StoreContext } from "../../context/StoreContext";
+import { StoreContext } from "../../context/StoreContext.jsx";
 import axios from "axios";
-import { assets } from "../../assets/assets";
+import { assets } from "../../assets/assets.jsx";
 
 const MyOrders = () => {
   const [data, setData] = useState([]);
