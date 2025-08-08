@@ -4,7 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home/home.jsx";
 import Cart from "./pages/cart/cart.jsx";
 import Verify from "./pages/Verify/Verify.jsx";
-import PlaceOrder from "./pages/placeOrder/placeOrder.jsx";
+import PlaceOrder from "./pages/placeOrder/placeorder.jsx";
 import MyOrders from "./pages/MyOrders/MyOrders.jsx";
 import Footer from "./components/Footer/Footer.jsx";
 import { useState } from "react";
