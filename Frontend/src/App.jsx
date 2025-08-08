@@ -1,14 +1,14 @@
 import React from "react";
-import Navbar from "./components/Navbar/Navbar";
+import Navbar from "./components/Navbar/Navbar.jsx";
 import { Routes, Route } from "react-router-dom";
-import Home from "./pages/Home/Home";
-import Cart from "./pages/Cart/Cart";
+import Home from "./pages/Home/Home.jsx";
+import Cart from "./pages/Cart/Cart.jsx";
 import Verify from "./pages/Verify/Verify.jsx";
-import PlaceOrder from "./pages/PlaceOrder/PlaceOrder";
-import MyOrders from "./pages/MyOrders/MyOrders";
-import Footer from "./components/Footer/Footer";
+import PlaceOrder from "./pages/PlaceOrder/PlaceOrder.jsx";
+import MyOrders from "./pages/MyOrders/MyOrders.jsx";
+import Footer from "./components/Footer/Footer.jsx";
 import { useState } from "react";
-import LoginPopup from "./components/LoginPopup/LoginPopup";
+import LoginPopup from "./components/LoginPopup/LoginPopup.jsx";
 
 const App = () => {
   const [showlogin, setShowLogin] = useState(false);
