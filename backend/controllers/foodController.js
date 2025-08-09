@@ -25,10 +25,7 @@ const addFood = async (req, res) => {
 
 
   
-  try{  const {result} = await cloudinary.uploader.upload(req.file.path, {
-            folder: 'uploads' // Optional: folder in Cloudinary
-        });
-    const imageUrl = result.secure_url;
+  try{  
 
     const food= new foodModel({
    name: req.body.name,
@@ -36,8 +33,11 @@ const addFood = async (req, res) => {
    price:req.body.price,
    category:req.body.category,
    image:image_filename ,
-   imageUrl: imageUrl 
+   
   })
+
+
+      
    await food.save()
     res.json({success:true,message:"Food Added"})
   }catch(error){
