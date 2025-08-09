@@ -1,5 +1,9 @@
 import foodModel from "../models/foodModel.js"
 import fs from 'fs'
+import {v2 as cloudinary} from 'cloudinary';
+
+
+
 
 
 
@@ -11,6 +15,7 @@ const addFood = async (req, res) => {
     image_filename = req.file.filename;
     console.log(req.file);
   }
+  
 
   // Validate required fields
   const { name, description, price, category } = req.body;
@@ -18,15 +23,22 @@ const addFood = async (req, res) => {
     return res.status(400).json({ success: false, message: "All fields are required" });
   }
 
-  const food= new foodModel({
+
+  
+  try{  const {result} = await cloudinary.uploader.upload(req.file.path, {
+            folder: 'uploads' // Optional: folder in Cloudinary
+        });
+    const imageUrl = result.secure_url;
+
+    const food= new foodModel({
    name: req.body.name,
    description:req.body.description,
    price:req.body.price,
    category:req.body.category,
-   image:image_filename 
+   image:image_filename ,
+   imageUrl: imageUrl 
   })
-  try{ 
-    await food.save()
+   await food.save()
     res.json({success:true,message:"Food Added"})
   }catch(error){
 console.log(error)
@@ -38,7 +50,7 @@ res.json({success:false,message:"Error"})
 // all food list
 const listFood =async(req ,res) =>{
   try{
-    const foods = await foodModel.find({});
+    const foods = await foodModel.find({}) ;
     res.json({sucssess:true,data:foods})
   }catch(error){
     console.log(error);

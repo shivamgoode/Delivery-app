@@ -4,7 +4,11 @@ const foodSchema = new mongoose.Schema({
   description: { type: String, required: true },
   price: { type: Number, required: true },
   image: { type: String,  },
-  category: { type: String, required: true }
+  category: { type: String, required: true },
+  imageUrl :{
+    type: String, required: true
+  }
+
 })
 const foodModel =mongoose.models.food || mongoose.model("food",foodSchema);
 /*This line ensures that you don’t create the same Mongoose model multiple times, which can cause errors in development (especially with hot reloading).
