@@ -1,6 +1,6 @@
 import foodModel from "../models/foodModel.js"
 import fs from 'fs'
-import {v2 as cloudinary} from 'cloudinary';
+
 
 
 
@@ -23,11 +23,7 @@ const addFood = async (req, res) => {
     return res.status(400).json({ success: false, message: "All fields are required" });
   }
 
-
-  
-  try{  
-
-    const food= new foodModel({
+ const food= new foodModel({
    name: req.body.name,
    description:req.body.description,
    price:req.body.price,
@@ -35,6 +31,10 @@ const addFood = async (req, res) => {
    image:image_filename ,
    
   })
+  
+  try{  
+
+   
 
 
       
