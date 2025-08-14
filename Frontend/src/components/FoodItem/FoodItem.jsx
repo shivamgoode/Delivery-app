@@ -1,7 +1,7 @@
-import "./FoodItem.css";
-import { assets, food_list } from "../../assets/assets.js";
+import "./foodItem.css";
+import { assets, food_list } from "../../assets/assets";
 import { useContext, useState } from "react";
-import { StoreContext } from "../../context/StoreContext.jsx";
+import { StoreContext } from "../../context/StoreContext";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useEffect } from "react";
@@ -15,7 +15,8 @@ const FoodItem = ({ id, name, price, description, image }) => {
 
       if (response.data.data) {
         response.data.data.map((item) => {
-          const image = item.image;
+          const image = item.imageUrl;
+          console.log(image);
         });
       } else {
         toast.error("Error");
@@ -30,7 +31,7 @@ const FoodItem = ({ id, name, price, description, image }) => {
   return (
     <div className="food-item">
       <div className="food-item-img-container">
-        <img className="food-item-img" src={url + "/images/" + image} alt="" />
+        <img className="food-item-img" src={image} alt="" />
         {!cartItems[id] ? (
           <img
             className="add"
