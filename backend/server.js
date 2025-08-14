@@ -6,12 +6,13 @@ import userRouter from "./routes/userRoute.js"
 import 'dotenv/config'
 import cartRouter from "./routes/cartRoute.js"
 import orderRouter from "./routes/orderRoute.js";
+import connectCloudinary from "./config/cloudinary.js"
 
 
 // app config
 const app = express();
 const port = 4000;
-
+await connectCloudinary()
 //middleware
 app.use(express.json());
 app.use(cors());
