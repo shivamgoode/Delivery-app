@@ -1,10 +1,6 @@
 import foodModel from "../models/foodModel.js"
 import fs from 'fs'
-
-
-
-
-
+import {v2 as cloudinary} from 'cloudinary';
 
 
 // add food item
@@ -15,7 +11,6 @@ const addFood = async (req, res) => {
     image_filename = req.file.filename;
     console.log(req.file);
   }
-  
 
   // Validate required fields
   const { name, description, price, category } = req.body;
@@ -23,22 +18,29 @@ const addFood = async (req, res) => {
     return res.status(400).json({ success: false, message: "All fields are required" });
   }
 
- const food= new foodModel({
-   name: req.body.name,
-   description:req.body.description,
-   price:req.body.price,
-   category:req.body.category,
-   image: image_filename ,
-   
-  })
   
-  try{  
+  try{ 
+      const result = await cloudinary.uploader.upload(req.file.path);
+      console.log(result)
 
-   
 
 
-      
-   await food.save()
+
+
+
+const food= new foodModel({
+   name: name,
+   description: description,
+   price: price,
+   category: category,
+   image: req.file.filename,
+   imageUrl : result.secure_url,
+  })
+
+
+
+
+    await food.save()
     res.json({success:true,message:"Food Added"})
   }catch(error){
 console.log(error)
@@ -50,8 +52,8 @@ res.json({success:false,message:"Error"})
 // all food list
 const listFood =async(req ,res) =>{
   try{
-    const foods = await foodModel.find({}) ;
-    res.json({sucssess:true,data:foods})
+    const foods = await foodModel.find({});
+    res.json({sucssess:true,data:foods, imageUrl: foods.imageUrl})
   }catch(error){
     console.log(error);
     res.json({sucssess: false, message:"Error"})
