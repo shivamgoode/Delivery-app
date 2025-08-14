@@ -1,7 +1,7 @@
-import "./FoodDisplay.css";
+import "./foodDisplay.css";
 import { useContext } from "react";
-import { StoreContext } from "../../context/StoreContext.jsx";
-import FoodItem from "../FoodItem/FoodItem.jsx";
+import { StoreContext } from "../../context/StoreContext";
+import FoodItem from "../FoodItem/FoodItem";
 
 const FoodDisplay = ({ category }) => {
   const { food_list } = useContext(StoreContext);
@@ -29,6 +29,7 @@ const FoodDisplay = ({ category }) => {
                 price={`$${item.price}`}
                 description={item.description}
                 image={item.image}
+                imagerl={item.imageUrl}
               />
             );
           }
