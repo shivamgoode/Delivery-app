@@ -1,7 +1,7 @@
 import "./foodItem.css";
-import { assets, food_list } from "../../assets/assets";
+import { assets, food_list } from "../../assets/assets.js";
 import { useContext, useState } from "react";
-import { StoreContext } from "../../context/StoreContext";
+import { StoreContext } from "../../context/StoreContext.jsx";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useEffect } from "react";
