@@ -1,4 +1,4 @@
-import "./foodItem.css";
+import "./fooditem.css";
 import { assets, food_list } from "../../assets/assets.js";
 import { useContext, useState } from "react";
 import { StoreContext } from "../../context/StoreContext.jsx";
