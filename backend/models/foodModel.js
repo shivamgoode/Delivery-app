@@ -6,7 +6,7 @@ const foodSchema = new mongoose.Schema({
   image: { type: String,  },
   category: { type: String, required: true },
   imageUrl :{type: String, required: true}
-  }
+  
 
 })
 const foodModel =mongoose.models.food || mongoose.model("food",foodSchema);
