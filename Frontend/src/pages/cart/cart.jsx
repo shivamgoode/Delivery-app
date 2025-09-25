@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import "./cart.css";
-import { StoreContext } from "../../context/StoreContext.jsx";
+import { StoreContext } from "../../context/StoreContext";
 import { useNavigate } from "react-router-dom";
 
 const cart = () => {
@@ -31,7 +31,7 @@ const cart = () => {
                 >
                   <img src={item.imageUrl} alt={item.name} />
                   <p>{item.name}</p>
-                  <p>${item.price}</p>
+                  <p>₹{item.price}</p>
                   <p>{cartItems[item._id]}</p>
                   <p>{item.price * cartItems[item._id]}</p>
                   <p onClick={() => removeFromCart(item._id)} className="cross">
@@ -50,18 +50,18 @@ const cart = () => {
           <div>
             <div className="cart-total-detalis">
               <p>Subtotal</p>
-              <p>${getTotalCartAmount()}</p>
+              <p>₹{getTotalCartAmount()}</p>
             </div>
             <hr />
             <div className="cart-total-detalis">
               <p>Delivery Fee</p>
-              <p>${getTotalCartAmount() === 0 ? 0 : 2}</p>
+              <p>₹{getTotalCartAmount() === 0 ? 0 : 30}</p>
             </div>
             <hr />
             <div className="cart-total-detalis">
               <b>Total</b>
               <b>
-                ${getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + 2}
+                ₹{getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + 30}
               </b>
             </div>
           </div>
