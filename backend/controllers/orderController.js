@@ -7,14 +7,15 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // ----------------- Online Payment (Stripe) -----------------
 const placeOrder = async (req, res) => {
-  const frontend_url = " https://delivery-app-frontend-0yk6.onrender.com";
+  const frontend_url = "https://delivery-app-frontend-0yk6.onrender.com"; // ✅ removed space
+
   try {
     const newOrder = new orderModel({
       userId: req.body.userId,
       items: req.body.items,
       amount: req.body.amount,
       address: req.body.address,
-      payment: false, // unpaid initially
+      payment: false, 
       paymentMethod: "online",
     });
 
@@ -24,41 +25,41 @@ const placeOrder = async (req, res) => {
     await userModel.findByIdAndUpdate(req.body.userId, { cartData: {} });
 
     // prepare line items for Stripe
-    const line_items = req.body.items.map(item => ({
+    const line_items = req.body.items.map((item) => ({
       price_data: {
-        currency: 'inr',
+        currency: "inr",
         product_data: {
           name: item.name,
-          images: [item.image],
+          // ✅ ensure image is a full URL or fallback
+          images: [item.image?.startsWith("http") ? item.image : `${frontend_url}/images/${item.image}`],
         },
-        unit_amount: item.price * 100, // INR → paise
+        unit_amount: Math.max(50, Math.round(item.price * 100)), // ✅ ensure valid amount
       },
       quantity: item.quantity,
     }));
 
-    // delivery charge (₹50)
+    // delivery charge (₹30)
     line_items.push({
       price_data: {
-        currency: 'inr',
-        product_data: { name: 'Delivery Charge' },
+        currency: "inr",
+        product_data: { name: "Delivery Charge" },
         unit_amount: 30 * 100,
       },
       quantity: 1,
     });
 
-    // Stripe session
+    // ✅ Stripe session
     const session = await stripe.checkout.sessions.create({
       line_items,
-      mode: 'payment',
-      success_url: `${frontend_url}verify?success=true&orderId=${newOrder._id}`,
-      cancel_url: `${frontend_url}verify?success=false&orderId=${newOrder._id}`,
+      mode: "payment",
+      success_url: `${frontend_url}/verify?success=true&orderId=${newOrder._id}`,
+      cancel_url: `${frontend_url}/verify?success=false&orderId=${newOrder._id}`,
     });
 
     res.json({ success: true, session_url: session.url });
-
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: 'Failed to place order' });
+    console.error("Stripe error:", error);
+    res.status(500).json({ success: false, message: "Failed to place online order" });
   }
 };
 
@@ -70,38 +71,35 @@ const codOrder = async (req, res) => {
       items: req.body.items,
       amount: req.body.amount,
       address: req.body.address,
-      payment: false,   // still unpaid, COD means payment on delivery
+      payment: false,
       paymentMethod: "cod",
     });
 
     await newOrder.save();
-
-    // clear cart
     await userModel.findByIdAndUpdate(req.body.userId, { cartData: {} });
 
     res.json({ success: true, message: "Order placed with Cash on Delivery" });
-
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "Failed to place COD order" });
   }
 };
 
-// ----------------- Verify Payment (for Stripe only) -----------------
+// ----------------- Verify Payment -----------------
 const verifyOrder = async (req, res) => {
   const { orderId, success } = req.query;
 
   try {
     if (String(success) === "true") {
       await orderModel.findByIdAndUpdate(orderId, { payment: true });
-      res.json({ success: true, message: 'Paid successfully' });
+      res.json({ success: true, message: "Paid successfully" });
     } else {
       await orderModel.findByIdAndDelete(orderId);
-      res.json({ success: false, message: 'Payment failed' });
+      res.json({ success: false, message: "Payment failed" });
     }
   } catch (error) {
     console.log(error);
-    res.json({ success: false, message: 'Error verifying payment' });
+    res.json({ success: false, message: "Error verifying payment" });
   }
 };
 
@@ -112,7 +110,7 @@ const userOrders = async (req, res) => {
     res.json({ success: true, data: orders });
   } catch (error) {
     console.error(error);
-    res.json({ success: false, message: 'Failed to fetch orders' });
+    res.json({ success: false, message: "Failed to fetch orders" });
   }
 };
 
@@ -123,7 +121,7 @@ const listOrders = async (req, res) => {
     res.json({ success: true, data: orders });
   } catch (error) {
     console.error(error);
-    res.json({ success: false, message: 'Failed to fetch orders' });
+    res.json({ success: false, message: "Failed to fetch orders" });
   }
 };
 
@@ -131,10 +129,10 @@ const listOrders = async (req, res) => {
 const updateStatus = async (req, res) => {
   try {
     await orderModel.findByIdAndUpdate(req.body.orderId, { status: req.body.status });
-    res.json({ success: true, message: 'Status updated successfully' });
+    res.json({ success: true, message: "Status updated successfully" });
   } catch (error) {
     console.error(error);
-    res.json({ success: false, message: 'Failed to update status' });
+    res.json({ success: false, message: "Failed to update status" });
   }
 };
 
