@@ -5,12 +5,7 @@
   align-items: center;
 }
 .navbar .logo{
-  width: 100px;
-  height: 100px;
-  border-radius: 20px;
-  color: tomato;
-  
-  
+  width: 150px;
 }
 .navbar-menu{
   display: flex;
@@ -96,7 +91,6 @@
 .navbar-profile-dropdown li:hover{
   color: tomato;
 }
-
 
 @media(max-width:1050px){
   .navbar.logo{
