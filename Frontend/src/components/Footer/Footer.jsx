@@ -38,10 +38,10 @@ const Footer = () => {
           <h2>GET IN TOUCH</h2>
           <ul>
             <li>
-              <a href="tel:+917858044746">+91-7858044746</a>
+              <a href="tel:+916206322775">+91-6206322775</a>
             </li>
             <li>
-              <a href="mailto:shivam68338@gmail.com">shivam68338@gmail.com</a>
+              <a href="mailto:senadler1973@gmail.com">senadler1973@gmail.com</a>
             </li>
           </ul>
         </div>
