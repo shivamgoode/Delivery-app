@@ -7,7 +7,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // ----------------- Online Payment (Stripe) -----------------
 const placeOrder = async (req, res) => {
-  const frontend_url = "http://localhost:5173/";
+  const frontend_url = "https://delivery-app-frontend-0yk6.onrender.com";
   try {
     const newOrder = new orderModel({
       userId: req.body.userId,
