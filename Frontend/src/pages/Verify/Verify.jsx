@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import axios from "axios";
 
 import { useContext } from "react";
-import { StoreContext } from "../../context/StoreContext.jsx";
+import { StoreContext } from "../../context/StoreContext";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
