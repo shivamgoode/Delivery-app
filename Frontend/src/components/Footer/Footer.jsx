@@ -1,23 +1,26 @@
 import React from "react";
 import "./Footer.css";
-import { assets } from "../../assets/assets.js";
+import { assets } from "../../assets/assets";
 
 const Footer = () => {
   return (
     <div className="footer" id="footer">
       <div className="footer-content">
         <div className="footer-content-left">
-          <img className="footer-logo" src={assets.logo} alt="Logo" />
+          <img src={assets.logo} alt="Logo" />
           <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquam
-            fugit similique eligendi. Repellat odio pariatur doloremque totam
-            voluptatibus, cumque provident nam, placeat numquam corporis sint
-            sapiente earum alias eveniet tenetur!
+            We promise to serve only the freshest ingredients in every dish,
+            ensuring that each meal is crafted with care and attention to
+            detail. At the heart of our service, quality and taste are our top
+            priorities, because we believe that every bite should bring delight.
+            Your satisfaction drives us to maintain excellence in everything we
+            prepare, delivering meals that are consistently delicious and
+            wholesome.
           </p>
           <div className="footer-social-icon">
             <img className="fb" src={assets.facebook_icon} alt="facebook" />
             <img className="twit" src={assets.twitter_icon} alt="twitter" />
-            <img className="link" src={assets.linkedin_icon} alt="lkinkedin" />
+            <img className="link" src={assets.linkedin_icon} alt="linkedin" />
           </div>
         </div>
 
@@ -34,14 +37,18 @@ const Footer = () => {
         <div className="footer-content-right">
           <h2>GET IN TOUCH</h2>
           <ul>
-            <li>+91-7858044746</li>
-            <li>shivam68338@gmail.com</li>
+            <li>
+              <a href="tel:+917858044746">+91-7858044746</a>
+            </li>
+            <li>
+              <a href="mailto:shivam68338@gmail.com">shivam68338@gmail.com</a>
+            </li>
           </ul>
         </div>
       </div>
       <hr />
       <p className="footer-copyright">
-        Copyright 2025 © Foody.com -All Right Reserved
+        Copyright 2025 © Adler.com - All Rights Reserved
       </p>
     </div>
   );
