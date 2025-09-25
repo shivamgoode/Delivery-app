@@ -1,37 +1,44 @@
-import "./FoodItem.css";
-import { assets, food_list } from "../../assets/assets.js";
-import { useContext, useState } from "react";
-import { StoreContext } from "../../context/StoreContext.jsx";
+import "./foodItem.css";
+import { assets } from "../../assets/assets";
+import { useContext } from "react";
+import { StoreContext } from "../../context/StoreContext";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useEffect } from "react";
-const FoodItem = ({ id, name, price, description, image }) => {
-  const { cartItems, addToCart, removeFromCart, url } =
-    useContext(StoreContext);
 
+const FoodItem = ({ id, name, price, description, image }) => {
+  // ✅ Provide default empty object for cartItems
+  const {
+    cartItems = {},
+    addToCart,
+    removeFromCart,
+    url,
+  } = useContext(StoreContext);
+
+  // Example fetch function (if needed later)
   const fetchList = async () => {
     try {
       const response = await axios.get(url + "/api/food/list");
 
       if (response.data.data) {
-        response.data.data.map((item) => {
-          const image = item.imageUrl;
-          console.log(image);
+        response.data.data.forEach((item) => {
+          const imageUrl = item.imageUrl || item.image;
+          console.log(imageUrl);
         });
       } else {
-        toast.error("Error");
+        toast.error("Error fetching food list");
       }
+
+      return response;
     } catch (error) {
       toast.error("Failed to fetch list");
       console.error(error);
     }
-    return response;
   };
 
   return (
     <div className="food-item">
       <div className="food-item-img-container">
-        <img className="food-item-img" src={image} alt="" />
+        <img className="food-item-img" src={image} alt={name} />
         {!cartItems[id] ? (
           <img
             className="add"
@@ -55,13 +62,14 @@ const FoodItem = ({ id, name, price, description, image }) => {
           </div>
         )}
       </div>
+
       <div className="food-item-info">
         <div className="food-item-name-rating">
           <p>{name}</p>
           <img src={assets.rating_starts} alt="Rating" />
         </div>
         <p className="food-item-desc">{description}</p>
-        <p className="food-item-price">{price}</p>
+        <p className="food-item-price">₹{price}</p>
       </div>
     </div>
   );
