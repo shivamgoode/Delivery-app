@@ -136,41 +136,32 @@
   }
 }
 
-/* Mobile */
+/* Mobile & Small Mobile (≤750px) */
 @media (max-width: 750px) {
-  .navbar-menu {
-    display: none; /* ✅ Hide menu */
-  }
-  .navbar-right {
-    gap: 15px;
+  /* Only show logo and sign-in button */
+  .navbar-menu,
+  .navbar-search-icon,
+  .navbar-profile {
+    display: none; /* hide menu, search, profile */
   }
 
-  /* ✅ Hide search icon */
-  .navbar-search-icon {
-    display: none;
-  }
-}
-
-/* Small Mobile */
-@media (max-width: 600px) {
   .navbar {
-    flex-direction: column; /* ✅ Stack logo + right side */
-    align-items: flex-start;
-  }
-  .navbar-right {
-    width: 100%;
+    flex-direction: row; /* keep logo + button in a row */
     justify-content: space-between;
+    align-items: center;
+    padding: 15px;
   }
-  .navbar button {
-    padding: 6px 15px;
-    font-size: 14px;
-  }
+
   .navbar .logo {
     width: 100px;
   }
 
-  /* ✅ Ensure search icon stays hidden */
-  .navbar-search-icon {
-    display: none;
+  .navbar-right {
+    gap: 0; /* remove extra spacing */
+  }
+
+  .navbar-right button {
+    padding: 6px 15px;
+    font-size: 14px;
   }
 }
