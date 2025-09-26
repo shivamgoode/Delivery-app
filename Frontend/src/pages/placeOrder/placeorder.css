@@ -7,11 +7,14 @@
   flex-wrap: wrap; /* ensures content wraps on smaller screens */
   padding: 0 15px; /* padding for small screens */
   box-sizing: border-box;
+  max-width: 100%;   /* prevent content overflow */
+  overflow-x: hidden; /* stop side scrolling */
 }
 
 .place-order-left {
   width: 100%;
-  max-width: max(30%, 500px);
+  max-width: 500px; /* fixed max width */
+  flex: 1;          /* allow flexible resizing */
 }
 
 .place-order-left .title {
@@ -28,21 +31,24 @@
   border-radius: 4px;
   outline-color: tomato;
   font-size: 14px;
+  box-sizing: border-box; /* keep inputs inside */
 }
 
 .place-order-left .multi-fields {
   display: flex;
   gap: 10px;
+  flex-wrap: wrap; /* ensures no overflow on small screens */
 }
 
 .place-order-right {
   width: 100%;
-  max-width: max(40%, 500px);
+  max-width: 500px; /* fixed max width */
+  flex: 1;
 }
 
 .place-order .cart-total button {
   margin-top: 30px;
-  width: 100%; /* full width by default */
+  width: 100%; /* full width */
   max-width: 500px; /* prevent oversized buttons */
   padding: 12px;
   font-size: 16px;
