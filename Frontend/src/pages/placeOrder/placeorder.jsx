@@ -23,6 +23,14 @@ const Placeorder = () => {
   const [paymentMethod, setPaymentMethod] = useState("online");
   const navigate = useNavigate();
 
+  // ✅ dynamic delivery fee
+  const deliveryFee =
+    getTotalCartAmount() === 0
+      ? 0
+      : paymentMethod === "cod"
+      ? 30
+      : 50;
+
   const onChangeHandler = (event) => {
     const { name, value } = event.target;
     setData((prevData) => ({
@@ -43,13 +51,10 @@ const Placeorder = () => {
       }
     });
 
-    // ✅ Delivery fee logic
-    const deliveryFee = paymentMethod === "online" ? 50 : 0;
-
     let orderData = {
       address: data,
       items: orderItems,
-      amount: getTotalCartAmount() + deliveryFee,
+      amount: getTotalCartAmount() + deliveryFee, // ✅ use dynamic deliveryFee
       paymentMethod,
     };
 
@@ -90,11 +95,6 @@ const Placeorder = () => {
       navigate("/cart");
     }
   }, [token]);
-
-  // ✅ Delivery fee based on method
-  const deliveryFee = paymentMethod === "online" ? 50 : 0;
-  const totalAmount =
-    getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + deliveryFee;
 
   return (
     <form onSubmit={placeOrderHandler} className="place-order">
@@ -191,12 +191,12 @@ const Placeorder = () => {
             <hr />
             <div className="cart-total-detalis">
               <p>Delivery Fee</p>
-              <p>₹{deliveryFee}</p>
+              <p>₹{deliveryFee}</p> {/* ✅ show correct delivery fee */}
             </div>
             <hr />
             <div className="cart-total-detalis">
               <b>Total</b>
-              <b>₹{totalAmount}</b>
+              <b>₹{getTotalCartAmount() + deliveryFee}</b>
             </div>
           </div>
 
@@ -210,7 +210,7 @@ const Placeorder = () => {
                 checked={paymentMethod === "online"}
                 onChange={() => setPaymentMethod("online")}
               />
-              Online Payment
+              Online Payment (Stripe)
             </label>
             <br />
             <label>
@@ -221,7 +221,7 @@ const Placeorder = () => {
                 checked={paymentMethod === "cod"}
                 onChange={() => setPaymentMethod("cod")}
               />
-              Cash on Delivery
+              Cash on Delivery (₹30 delivery fee)
             </label>
           </div>
 
@@ -235,3 +235,4 @@ const Placeorder = () => {
 };
 
 export default Placeorder;
+
