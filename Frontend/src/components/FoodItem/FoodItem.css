@@ -1,87 +1,31 @@
-.food-item {
-  width: 100%;
-  max-width: 250px;      /* ✅ fixed card width */
-  height: 380px;         /* ✅ fixed card height */
-  margin: auto;
-  border-radius: 15px;
-  box-shadow: 0px 0px 10px #00000015;
-  transition: 0.3s;
-  animation: fadeIn 1s;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between; /* push content evenly */
-  overflow: hidden; /* hide any overflow */
-}
-
-/* ✅ Image area */
-.food-item-img-container {
-  position: relative;
-}
-
-.food-item-img {
-  width: 100%;
-  height: 180px;          /* ✅ fixed height for all images */
-  border-radius: 15px 15px 0px 0px;
-  object-fit: cover;      /* crop while keeping ratio */
-}
-
 /* ✅ Info area */
 .food-item-info {
-  flex: 1;                /* take remaining space */
+  flex: 1;
   padding: 15px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  overflow: hidden; /* hide overflow */
 }
 
-.food-item-name-rating {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.food-item-name-rating p {
-  font-size: 18px;
-  font-weight: 500;
-}
-
-.food-item-name-rating img {
-  width: 60px;
-}
-
+/* ✅ Description becomes scrollable if too long */
 .food-item-desc {
   color: #676767;
   font-size: 12px;
-  flex-grow: 1; /* ✅ ensures equal spacing */
+  flex-grow: 1;
+  overflow-y: auto;       /* allow vertical scrolling */
+  scrollbar-width: none;  /* Firefox hide scrollbar */
 }
 
+.food-item-desc::-webkit-scrollbar {
+  display: none;          /* Chrome, Safari, Edge hide scrollbar */
+}
+
+/* ✅ Keep price visible at bottom */
 .food-item-price {
   color: tomato;
   font-size: 20px;
   font-weight: 600;
   margin-top: 10px;
-}
-
-/* ✅ Add button / counter */
-.food-item-img-container .add {
-  width: 35px;
-  position: absolute;
-  bottom: 15px;
-  right: 15px;
-  cursor: pointer;
-  border-radius: 50px;
-}
-
-.food-item-counter {
-  position: absolute;
-  bottom: 15px;
-  right: 15px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 6px;
-  border-radius: 50px;
-  background-color: white;
+  flex-shrink: 0; /* prevent price from being pushed away */
 }
