@@ -4,9 +4,17 @@ import { StoreContext } from "../../context/StoreContext";
 import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
-  const { cartItems, food_list, removeFromCart, getTotalCartAmount } =
-    useContext(StoreContext);
+  const { cartItems, food_list, removeFromCart, getTotalCartAmount, token } =
+    useContext(StoreContext); // ✅ assuming `token` is stored in context for login check
   const navigate = useNavigate();
+
+  const handleCheckout = () => {
+    if (!token) {
+      alert("⚠️ Please login first to proceed to checkout.");
+    } else {
+      navigate("/placeorder");
+    }
+  };
 
   return (
     <div className="cart" id="cart">
@@ -42,6 +50,7 @@ const Cart = () => {
               </div>
             );
           }
+          return null;
         })}
       </div>
 
@@ -66,9 +75,8 @@ const Cart = () => {
               </b>
             </div>
           </div>
-          <button onClick={() => navigate("/placeorder")}>
-            PROCEED TO CHECKOUT
-          </button>
+          {/* ✅ Updated button click */}
+          <button onClick={handleCheckout}>PROCEED TO CHECKOUT</button>
         </div>
 
         <div className="cart-Promocode">
