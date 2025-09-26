@@ -138,16 +138,15 @@
 
 /* Mobile & Small Mobile (≤750px) */
 @media (max-width: 750px) {
-  /* Hide menu, search icon, and sign-in button */
+  /* Hide menu and search icon */
   .navbar-menu,
-  .navbar-search-icon,
-  .navbar-right,
-  .navbar-right img
-  
+  .navbar-search-icon {
+    display: none;
+  }
 
-  /* Only show logo + profile */
+  /* Only show logo + profile + sign-in button */
   .navbar {
-    flex-direction: row; /* logo + profile in a row */
+    flex-direction: row; /* logo on left, right side items on right */
     justify-content: space-between;
     align-items: center;
     padding: 15px;
@@ -158,6 +157,18 @@
   }
 
   .navbar-right {
-    gap: 0; /* only profile visible */
+    gap: 10px; /* adjust spacing between profile and sign-in button */
+  }
+
+  /* Show only profile and sign-in button in navbar-right */
+  .navbar-right img {
+    display: inline-block; /* profile image */
+  }
+  .navbar-right button {
+    display: inline-block; /* sign-in button */
+  }
+  /* Hide any other items in navbar-right */
+  .navbar-right > *:not(img):not(button) {
+    display: none;
   }
 }
