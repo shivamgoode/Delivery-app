@@ -96,6 +96,8 @@
 
 /* ---------- RESPONSIVE ---------- */
 
+/* ---------- RESPONSIVE ---------- */
+
 /* Large Laptop */
 @media (max-width: 1200px) {
   .navbar .logo {
@@ -142,6 +144,11 @@
   .navbar-right {
     gap: 15px;
   }
+
+  /* ✅ Hide search icon */
+  .navbar-search-icon {
+    display: none;
+  }
 }
 
 /* Small Mobile */
@@ -160,5 +167,10 @@
   }
   .navbar .logo {
     width: 100px;
+  }
+
+  /* ✅ Ensure search icon stays hidden */
+  .navbar-search-icon {
+    display: none;
   }
 }
