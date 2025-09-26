@@ -141,7 +141,9 @@
   /* Hide menu, search icon, and sign-in button */
   .navbar-menu,
   .navbar-search-icon,
-  .navbar-right 
+  .navbar-right,
+  .navbar-right img
+  
 
   /* Only show logo + profile */
   .navbar {
