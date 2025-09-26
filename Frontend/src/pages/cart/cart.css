@@ -2,28 +2,34 @@
   margin-top: 100px;
   padding: 0 15px; /* padding for small screens */
   box-sizing: border-box;
+  max-width: 100%; 
+  overflow-x: hidden; /* prevent side scrolling */
 }
 
 /* Header row for cart items */
 .cart-items-title {
   display: grid;
-  grid-template-columns: 1fr 1.5fr 1fr 1fr 1fr 0.5fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.5fr);
   align-items: center;
   color: grey;
   font-size: max(1vw, 12px);
   font-weight: 500;
+  overflow-x: hidden;
 }
 
 .cart-items-item {
   margin: 10px 0px;
   display: grid;
-  grid-template-columns: 1fr 1.5fr 1fr 1fr 1fr 0.5fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.5fr);
   align-items: center;
   gap: 10px;
+  word-break: break-word; /* wrap long text */
 }
 
 .cart-items-item img {
   width: 50px;
+  max-width: 100%;
+  height: auto;
 }
 
 .cart hr {
@@ -43,6 +49,7 @@
   justify-content: space-between;
   gap: max(12vw, 20px);
   flex-wrap: wrap; /* wrap for small screens */
+  width: 100%;
 }
 
 .cart-total {
@@ -51,6 +58,7 @@
   flex-direction: column;
   gap: 20px;
   min-width: 280px;
+  max-width: 100%;
 }
 
 .cart-total-detalis {
@@ -84,6 +92,7 @@
 .cart-promocode {
   flex: 1;
   min-width: 280px;
+  max-width: 100%;
 }
 
 .cart-promocode p {
@@ -96,6 +105,7 @@
   gap: 10px;
   margin-top: 10px;
   flex-wrap: wrap;
+  width: 100%;
 }
 
 .cart-promocode-input input {
@@ -107,10 +117,12 @@
   height: 37px;
   border-radius: 4px;
   font-size: 14px;
+  max-width: 100%; /* prevent overflow */
 }
 
 .cart-promocode-input button {
   width: max(10vw, 120px);
+  max-width: 100%;
   padding: 10px 5px;
   background-color: black;
   border: none;
@@ -131,7 +143,7 @@
 @media (max-width: 1024px) {
   .cart-items-title,
   .cart-items-item {
-    grid-template-columns: 1fr 1fr 1fr 0.5fr; /* fewer columns */
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.5fr); /* fewer columns */
     font-size: 13px;
   }
   .cart-items-item img {
@@ -152,6 +164,7 @@
     padding: 10px;
     border: 1px solid #eee;
     border-radius: 6px;
+    width: 100%; /* keep within viewport */
   }
   .cart-items-item img {
     width: 45px;
@@ -164,3 +177,5 @@
   .cart-total,
   .cart-promocode {
     width: 100%;
+  }
+}
