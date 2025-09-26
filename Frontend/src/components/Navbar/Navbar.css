@@ -144,7 +144,11 @@
   .navbar-menu,
   .navbar-search-icon {
     display: none;
+  },
+  .navbar-search-icon .dot {
+    display: none;
   }
+  
 
   /* Keep logo + profile visible */
   .navbar {
