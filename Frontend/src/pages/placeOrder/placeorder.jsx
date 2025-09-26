@@ -43,10 +43,13 @@ const Placeorder = () => {
       }
     });
 
+    // ✅ Delivery fee logic
+    const deliveryFee = paymentMethod === "online" ? 50 : 0;
+
     let orderData = {
       address: data,
       items: orderItems,
-      amount: getTotalCartAmount() + 30,
+      amount: getTotalCartAmount() + deliveryFee,
       paymentMethod,
     };
 
@@ -87,6 +90,11 @@ const Placeorder = () => {
       navigate("/cart");
     }
   }, [token]);
+
+  // ✅ Delivery fee based on method
+  const deliveryFee = paymentMethod === "online" ? 50 : 0;
+  const totalAmount =
+    getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + deliveryFee;
 
   return (
     <form onSubmit={placeOrderHandler} className="place-order">
@@ -183,14 +191,12 @@ const Placeorder = () => {
             <hr />
             <div className="cart-total-detalis">
               <p>Delivery Fee</p>
-              <p>₹{getTotalCartAmount() === 0 ? 0 : 30}</p>
+              <p>₹{deliveryFee}</p>
             </div>
             <hr />
             <div className="cart-total-detalis">
               <b>Total</b>
-              <b>
-                ₹{getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + 30}
-              </b>
+              <b>₹{totalAmount}</b>
             </div>
           </div>
 
@@ -204,7 +210,7 @@ const Placeorder = () => {
                 checked={paymentMethod === "online"}
                 onChange={() => setPaymentMethod("online")}
               />
-              Online Payment (Stripe)
+              Online Payment
             </label>
             <br />
             <label>
