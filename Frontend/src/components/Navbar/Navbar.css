@@ -98,6 +98,8 @@
 
 /* ---------- RESPONSIVE ---------- */
 
+/* ---------- RESPONSIVE ---------- */
+
 /* Large Laptop */
 @media (max-width: 1200px) {
   .navbar .logo {
@@ -138,15 +140,15 @@
 
 /* Mobile & Small Mobile (≤750px) */
 @media (max-width: 750px) {
-  /* Only show logo and sign-in button */
+  /* Hide menu and search icon */
   .navbar-menu,
-  .navbar-search-icon{
-    display: none; /* hide menu, search, profile */
-  },
-  .navbar-profile 
+  .navbar-search-icon {
+    display: none;
+  }
 
+  /* Keep logo + profile visible */
   .navbar {
-    flex-direction: row; /* keep logo + button in a row */
+    flex-direction: row; /* logo + profile in a row */
     justify-content: space-between;
     align-items: center;
     padding: 15px;
@@ -156,12 +158,13 @@
     width: 100px;
   }
 
+  /* Right section only shows profile */
   .navbar-right {
-    gap: 0; /* remove extra spacing */
+    gap: 0; /* no extra spacing */
   }
 
+  /* Hide other buttons if any in right section */
   .navbar-right button {
-    padding: 6px 15px;
-    font-size: 14px;
+    display: none;
   }
 }
