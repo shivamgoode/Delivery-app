@@ -142,12 +142,7 @@
 @media (max-width: 750px) {
   /* Hide menu and search icon */
   .navbar-menu,
-  .navbar-search-icon {
-    display: none;
-  },
-  .navbar-right .se{
-    display: none;
-  }
+  
   
 
   /* Keep logo + profile visible */
