@@ -28,7 +28,13 @@
   height: 320px; /* fixed height */
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+
+  overflow-y: auto;       /* allow vertical scroll */
+  scrollbar-width: none;  /* Firefox hide scrollbar */
+}
+
+.food-card::-webkit-scrollbar {
+  display: none;          /* Chrome, Safari, Edge hide scrollbar */
 }
 
 /* ✅ Make images consistent */
