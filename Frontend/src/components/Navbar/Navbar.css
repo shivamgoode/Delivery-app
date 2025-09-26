@@ -140,10 +140,10 @@
 @media (max-width: 750px) {
   /* Only show logo and sign-in button */
   .navbar-menu,
-  .navbar-search-icon,
-  .navbar-profile {
+  .navbar-search-icon{
     display: none; /* hide menu, search, profile */
-  }
+  },
+  .navbar-profile 
 
   .navbar {
     flex-direction: row; /* keep logo + button in a row */
