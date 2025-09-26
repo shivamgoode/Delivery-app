@@ -140,6 +140,7 @@
 @media (max-width: 750px) {
   /* Hide menu and search icon */
   .navbar-menu,
+  .navbar-right,
   .navbar-search-icon {
     display: none;
   }
