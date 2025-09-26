@@ -25,11 +25,7 @@ const Placeorder = () => {
 
   // ✅ dynamic delivery fee
   const deliveryFee =
-    getTotalCartAmount() === 0
-      ? 0
-      : paymentMethod === "cod"
-      ? 30
-      : 50;
+    getTotalCartAmount() === 0 ? 0 : paymentMethod === "cod" ? 30 : 50;
 
   const onChangeHandler = (event) => {
     const { name, value } = event.target;
@@ -67,7 +63,14 @@ const Placeorder = () => {
         );
         if (response.data.success) {
           const { session_url } = response.data;
+          // ✅ Stripe checkout redirect
           window.location.replace(session_url);
+
+          // ✅ After successful payment (backend redirect or success hook)
+          // For now, also ensure navigation to MyOrders
+          setTimeout(() => {
+            navigate("/myorders");
+          }, 2000); // wait a bit to let Stripe redirect
         } else {
           alert("Something went wrong, please try again later.");
         }
@@ -77,7 +80,7 @@ const Placeorder = () => {
         });
         if (response.data.success) {
           alert("✅ Order placed successfully (Cash on Delivery).");
-          navigate("/myorders");
+          navigate("/myorders"); // ✅ redirect to MyOrders
         } else {
           alert("❌ Failed to place order. Please try again.");
         }
@@ -191,7 +194,7 @@ const Placeorder = () => {
             <hr />
             <div className="cart-total-detalis">
               <p>Delivery Fee</p>
-              <p>₹{deliveryFee}</p> {/* ✅ show correct delivery fee */}
+              <p>₹{deliveryFee}</p>
             </div>
             <hr />
             <div className="cart-total-detalis">
@@ -235,4 +238,3 @@ const Placeorder = () => {
 };
 
 export default Placeorder;
-
