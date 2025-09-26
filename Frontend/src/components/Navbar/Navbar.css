@@ -100,6 +100,8 @@
 
 /* ---------- RESPONSIVE ---------- */
 
+/* ---------- RESPONSIVE ---------- */
+
 /* Large Laptop */
 @media (max-width: 1200px) {
   .navbar .logo {
@@ -142,8 +144,9 @@
 @media (max-width: 750px) {
   /* Hide menu and search icon */
   .navbar-menu,
-  
-  
+  .navbar-search-icon {
+    display: none;
+  }
 
   /* Keep logo + profile visible */
   .navbar {
