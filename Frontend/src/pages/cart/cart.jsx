@@ -4,14 +4,19 @@ import { StoreContext } from "../../context/StoreContext";
 import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
-  const { cartItems, food_list, removeFromCart, getTotalCartAmount, token } =
-    useContext(StoreContext);
+  const {
+    cartItems,
+    food_list,
+    removeFromCart,
+    getTotalCartAmount,
+    token,
+    discount,
+    promoCode,
+    applyPromoCode
+  } = useContext(StoreContext);
+
   const navigate = useNavigate();
-
-  const [promoCode, setPromoCode] = useState("");
-  const [discount, setDiscount] = useState(0);
-
-  // New states for popup message
+  const [inputPromo, setInputPromo] = useState(""); // user input
   const [popupMessage, setPopupMessage] = useState("");
   const [showPopup, setShowPopup] = useState(false);
 
@@ -19,29 +24,15 @@ const Cart = () => {
     if (!token) {
       alert("⚠️ Please login first to proceed to checkout.");
     } else {
-      navigate("/placeorder");
+      navigate("/placeorder"); // discount & promoCode are now in context
     }
   };
 
-  const applyPromoCode = () => {
-    let discountValue = 0;
-
-    if (promoCode === "ACT15") {
-  discountValue = getTotalCartAmount() * 0.15;
-} else if (promoCode === "BIHAR15") {
-  discountValue = getTotalCartAmount() * 0.15; 
-} else {   // ✅ correctly closed previous block
-  setDiscount(0);
-  setPopupMessage("❌ Invalid Promocode");
-  setShowPopup(true);
-  return;
-}
-
-
-    setDiscount(discountValue);
-    setPopupMessage(`✅ Promocode applied! You saved ₹${discountValue.toFixed(2)} 🎉`);
+  const handleApplyPromo = () => {
+    const result = applyPromoCode(inputPromo);
+    setPopupMessage(result.message);
     setShowPopup(true);
-    setTimeout(() => setShowPopup(false), 3000); // hide popup after 3 sec
+    setTimeout(() => setShowPopup(false), 3000);
   };
 
   const subtotal = getTotalCartAmount();
@@ -50,7 +41,6 @@ const Cart = () => {
 
   return (
     <div className="cart" id="cart">
-      {/* Popup */}
       {showPopup && <div className="popup-message">{popupMessage}</div>}
 
       <div className="cart-items">
@@ -64,29 +54,23 @@ const Cart = () => {
         </div>
         <br />
         <hr />
-        {food_list.map((item) => {
-          if (cartItems[item._id] > 0) {
-            return (
-              <div key={item._id}>
-                <div className="cart-items-title cart-items-item">
-                  <img src={item.imageUrl} alt={item.name} />
-                  <p>{item.name}</p>
-                  <p>₹{item.price}</p>
-                  <p>{cartItems[item._id]}</p>
-                  <p>₹{item.price * cartItems[item._id]}</p>
-                  <p
-                    onClick={() => removeFromCart(item._id)}
-                    className="cross"
-                  >
-                    X
-                  </p>
-                </div>
-                <hr />
+        {food_list.map((item) =>
+          cartItems[item._id] > 0 ? (
+            <div key={item._id}>
+              <div className="cart-items-title cart-items-item">
+                <img src={item.imageUrl} alt={item.name} />
+                <p>{item.name}</p>
+                <p>₹{item.price}</p>
+                <p>{cartItems[item._id]}</p>
+                <p>₹{item.price * cartItems[item._id]}</p>
+                <p onClick={() => removeFromCart(item._id)} className="cross">
+                  X
+                </p>
               </div>
-            );
-          }
-          return null;
-        })}
+              <hr />
+            </div>
+          ) : null
+        )}
       </div>
 
       <div className="cart-bottom">
@@ -105,7 +89,7 @@ const Cart = () => {
             <hr />
             {discount > 0 && (
               <div className="cart-total-detalis">
-                <p>Discount</p>
+                <p>Discount ({promoCode})</p>
                 <p>- ₹{discount.toFixed(2)}</p>
               </div>
             )}
@@ -124,10 +108,10 @@ const Cart = () => {
               <input
                 type="text"
                 placeholder="Enter Promocode"
-                value={promoCode}
-                onChange={(e) => setPromoCode(e.target.value)}
+                value={inputPromo}
+                onChange={(e) => setInputPromo(e.target.value)}
               />
-              <button onClick={applyPromoCode}>APPLY</button>
+              <button onClick={handleApplyPromo}>APPLY</button>
             </div>
           </div>
 
