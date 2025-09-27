@@ -1,12 +1,15 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import "./cart.css";
 import { StoreContext } from "../../context/StoreContext";
 import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
   const { cartItems, food_list, removeFromCart, getTotalCartAmount, token } =
-    useContext(StoreContext); // ✅ assuming `token` is stored in context for login check
+    useContext(StoreContext);
   const navigate = useNavigate();
+
+  const [promoCode, setPromoCode] = useState("");
+  const [discount, setDiscount] = useState(0);
 
   const handleCheckout = () => {
     if (!token) {
@@ -15,6 +18,29 @@ const Cart = () => {
       navigate("/placeorder");
     }
   };
+
+  const applyPromoCode = () => {
+    let discountValue = 0;
+
+    if (promoCode === "DISCOUNT10") {
+      discountValue = getTotalCartAmount() * 0.1; // 10% discount
+    } else if (promoCode === "SAVE50") {
+      discountValue = 50; // flat ₹50 discount
+    } else if (promoCode === "FREESHIP") {
+      discountValue = 50; // wave off delivery fee
+    } else {
+      alert("❌ Invalid Promocode");
+      setDiscount(0);
+      return;
+    }
+
+    setDiscount(discountValue);
+    alert(`✅ Promocode applied! You saved ₹${discountValue.toFixed(2)} 🎉`);
+  };
+
+  const subtotal = getTotalCartAmount();
+  const deliveryFee = subtotal === 0 ? 0 : 50;
+  const total = subtotal === 0 ? 0 : subtotal + deliveryFee - discount;
 
   return (
     <div className="cart" id="cart">
@@ -60,22 +86,25 @@ const Cart = () => {
           <div>
             <div className="cart-total-detalis">
               <p>Subtotal</p>
-              <p>₹{getTotalCartAmount()}</p>
+              <p>₹{subtotal}</p>
             </div>
             <hr />
             <div className="cart-total-detalis">
               <p>Delivery Fee</p>
-              <p>₹{getTotalCartAmount() === 0 ? 0 : 50}</p>
+              <p>₹{deliveryFee}</p>
             </div>
             <hr />
+            {discount > 0 && (
+              <div className="cart-total-detalis">
+                <p>Discount</p>
+                <p>- ₹{discount.toFixed(2)}</p>
+              </div>
+            )}
             <div className="cart-total-detalis">
               <b>Total</b>
-              <b>
-                ₹{getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + 50}
-              </b>
+              <b>₹{total}</b>
             </div>
           </div>
-          {/* ✅ Updated button click */}
           <button onClick={handleCheckout}>PROCEED TO CHECKOUT</button>
         </div>
 
@@ -83,12 +112,16 @@ const Cart = () => {
           <div>
             <p>If you have promocode, Enter it here</p>
             <div className="cart-promocode-input">
-              <input type="text" placeholder="Enter Promocode" />
-              <button>APPLY</button>
+              <input
+                type="text"
+                placeholder="Enter Promocode"
+                value={promoCode}
+                onChange={(e) => setPromoCode(e.target.value)}
+              />
+              <button onClick={applyPromoCode}>APPLY</button>
             </div>
           </div>
 
-          {/* ✅ New COD discount message */}
           <p className="cod-discount">
             💡 Order <b>Cash on Delivery</b> for <b>60% discount</b> on delivery
             charge
