@@ -73,7 +73,7 @@ export const assets = {
     play_store,
     ig,
     facebook_icon,
-    whatsapp ,
+     whatsapp,
     cross_icon,
     selector_icon,
     profile_icon,
@@ -348,4 +348,5 @@ export const food_list = [
         category: "Noodles"
     }
 ]
+
 
