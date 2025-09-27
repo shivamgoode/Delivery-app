@@ -19,11 +19,11 @@ const Footer = () => {
           </p>
           <div className="footer-social-icon">
             <img className="fb" src={assets.facebook_icon} alt="facebook" />
-            <img className="twit" src={assets.whatsapp} alt="twitter" />
+            <img className="twit" src={assets.whatsapp} alt="whatsapp" />
 
-            {/* ✅ Instagram Icon Redirect */}
+            {/* ✅ Instagram Icon Redirect to WhatsApp */}
             <a
-              href="https://www.instagram.com/adler_cloudkitchen?igsh=Zno3ajI1YXA5dWUw"
+              href="https://wa.me/916206322775"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -38,7 +38,7 @@ const Footer = () => {
             <li>Home</li>
             <li>About us</li>
             <li>Delivery</li>
-            
+            <li>Privacy policy</li>
           </ul>
         </div>
 
@@ -63,3 +63,4 @@ const Footer = () => {
 };
 
 export default Footer;
+
