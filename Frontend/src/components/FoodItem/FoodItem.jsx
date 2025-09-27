@@ -2,11 +2,10 @@ import "./FoodItem.css";
 import { assets } from "../../assets/assets";
 import { useContext } from "react";
 import { StoreContext } from "../../context/StoreContext";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const FoodItem = ({ id, name, price, description, image }) => {
-  // ✅ Provide default empty object for cartItems
   const {
     cartItems = {},
     addToCart,
@@ -14,24 +13,16 @@ const FoodItem = ({ id, name, price, description, image }) => {
     url,
   } = useContext(StoreContext);
 
-  // Example fetch function (if needed later)
-  const fetchList = async () => {
+  const navigate = useNavigate();
+
+  // Function to handle "Buy Now" button
+  const handleBuyNow = async () => {
     try {
-      const response = await axios.get(url + "/api/food/list");
-
-      if (response.data.data) {
-        response.data.data.forEach((item) => {
-          const imageUrl = item.imageUrl || item.image;
-          console.log(imageUrl);
-        });
-      } else {
-        toast.error("Error fetching food list");
-      }
-
-      return response;
-    } catch (error) {
-      toast.error("Failed to fetch list");
-      console.error(error);
+      await addToCart(id); // add item to cart
+      navigate("/cart");    // redirect to cart page
+    } catch (err) {
+      toast.error("Failed to add item to cart");
+      console.error(err);
     }
   };
 
@@ -70,9 +61,14 @@ const FoodItem = ({ id, name, price, description, image }) => {
         </div>
         <p className="food-item-desc">{description}</p>
         <p className="food-item-price">₹{price}</p>
+        {/* Buy Now Button */}
+        <button className="buy-now-btn" onClick={handleBuyNow}>
+          Buy Now
+        </button>
       </div>
     </div>
   );
 };
 
 export default FoodItem;
+
