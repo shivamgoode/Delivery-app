@@ -5,7 +5,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const Placeorder = () => {
-  const { getTotalCartAmount, token, food_list, cartItems, url } =
+  const { getTotalCartAmount, token, food_list, cartItems, url, discount, promoCode } =
     useContext(StoreContext);
 
   const [data, setData] = useState({
@@ -50,7 +50,7 @@ const Placeorder = () => {
     let orderData = {
       address: data,
       items: orderItems,
-      amount: getTotalCartAmount() + deliveryFee, // ✅ use dynamic deliveryFee
+      amount: getTotalCartAmount() + deliveryFee - discount, // ✅ use dynamic deliveryFee
       paymentMethod,
     };
 
