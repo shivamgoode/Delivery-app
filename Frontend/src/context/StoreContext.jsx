@@ -105,16 +105,16 @@ const applyPromoCode = () => {
   let discountValue = 0;
 
   if (promoCode === "ACT15") {
-    discountValue = getTotalCartAmount() * 0.15;
-  } else if (promoCode === "BIHAR15") {
-    discountValue = getTotalCartAmount() * 0.15; 
-  } else {
-    setDiscount(0);
-    setPopupMessage("❌ Invalid Promocode");
-    setShowPopup(true);
-    setTimeout(() => setShowPopup(false), 3000); // hide popup after 3 sec
-    return;
-  }
+  discountValue = getTotalCartAmount() * 0.15;
+} else if (promoCode === "BIHAR15") {
+  discountValue = getTotalCartAmount() * 0.15; 
+} else {   // ✅ correctly closed previous block
+  setDiscount(0);
+  setPopupMessage("❌ Invalid Promocode");
+  setShowPopup(true);
+  return;
+}
+
 
   setDiscount(discountValue);
   setPopupMessage(`✅ Promocode applied! You saved ₹${discountValue.toFixed(2)} 🎉`);
