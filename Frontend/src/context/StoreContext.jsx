@@ -10,10 +10,14 @@ const StoreContextProvider = (props) => {
   const [loggedOut, setLoggedOut] = useState(false);
   const [food_list, setFoodList] = useState([]);
 
+  const [promoCode, setPromoCode] = useState(""); // stores applied promo code
+  const [discount, setDiscount] = useState(0);   // stores current discount
+
+
   // Handle token safely
   const setToken = (t) => {
     setTokenState(t);
-    if (t) {
+  if (t) {
       localStorage.setItem("token", t);
       setLoggedOut(false);
     } else {
@@ -97,6 +101,31 @@ const StoreContextProvider = (props) => {
       setCartItems({});
     }
   };
+  const applyPromoCode = (code) => {
+  let discountValue = 0;
+
+  if (code === "DISCOUNT10") {
+    discountValue = getTotalCartAmount() * 0.1; // 10% discount
+  } else if (code === "SAVE50") {
+    discountValue = 50; // flat ₹50 discount
+  } else if (code === "FREESHIP") {
+    discountValue = 50; // waive delivery fee
+  } else {
+    setDiscount(0);
+    setPromoCode("");
+    return { success: false, message: "❌ Invalid Promocode" };
+  }
+
+  setDiscount(discountValue);
+  setPromoCode(code);
+  return { success: true, message: `✅ Promocode applied! You saved ₹${discountValue.toFixed(2)} 🎉` };
+};
+
+const clearPromoCode = () => {
+  setPromoCode("");
+  setDiscount(0);
+};
+
 
   // Load data on app start
   useEffect(() => {
@@ -123,6 +152,10 @@ const StoreContextProvider = (props) => {
     url,
     token,
     setToken,
+    promoCode,        // ✅ new
+    discount,         // ✅ new
+    applyPromoCode,   // ✅ new
+    clearPromoCode,   // ✅ new
   };
 
   return (
