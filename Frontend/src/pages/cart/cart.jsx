@@ -11,6 +11,10 @@ const Cart = () => {
   const [promoCode, setPromoCode] = useState("");
   const [discount, setDiscount] = useState(0);
 
+  // New states for popup message
+  const [popupMessage, setPopupMessage] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
+
   const handleCheckout = () => {
     if (!token) {
       alert("⚠️ Please login first to proceed to checkout.");
@@ -29,13 +33,17 @@ const Cart = () => {
     } else if (promoCode === "FREESHIP") {
       discountValue = 50; // wave off delivery fee
     } else {
-      alert("❌ Invalid Promocode");
       setDiscount(0);
+      setPopupMessage("❌ Invalid Promocode");
+      setShowPopup(true);
+      setTimeout(() => setShowPopup(false), 3000); // hide popup after 3 sec
       return;
     }
 
     setDiscount(discountValue);
-    alert(`✅ Promocode applied! You saved ₹${discountValue.toFixed(2)} 🎉`);
+    setPopupMessage(`✅ Promocode applied! You saved ₹${discountValue.toFixed(2)} 🎉`);
+    setShowPopup(true);
+    setTimeout(() => setShowPopup(false), 3000); // hide popup after 3 sec
   };
 
   const subtotal = getTotalCartAmount();
@@ -44,6 +52,9 @@ const Cart = () => {
 
   return (
     <div className="cart" id="cart">
+      {/* Popup */}
+      {showPopup && <div className="popup-message">{popupMessage}</div>}
+
       <div className="cart-items">
         <div className="cart-items-title">
           <p>Items</p>
