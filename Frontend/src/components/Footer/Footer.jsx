@@ -19,8 +19,8 @@ const Footer = () => {
           </p>
           <div className="footer-social-icon">
             <img className="fb" src={assets.facebook_icon} alt="facebook" />
-            <img className="twit" src={assets.twitter_icon} alt="twitter" />
-            <img className="link" src={assets.linkedin_icon} alt="linkedin" />
+            <img className="twit" src={assets.whatsapp } alt="twitter" />
+            <img className="link" src={assets.ig} alt="linkedin" />
           </div>
         </div>
 
