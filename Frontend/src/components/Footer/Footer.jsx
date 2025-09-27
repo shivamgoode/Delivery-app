@@ -19,7 +19,7 @@ const Footer = () => {
           </p>
           <div className="footer-social-icon">
             <img className="fb" src={assets.facebook_icon} alt="facebook" />
-            <img className="twit" src={assets.whatsapp} alt="whatsapp" />
+            <img className="twit" src={assets. whatsapp} alt="whatsapp" />
 
             {/* ✅ Instagram Icon Redirect to WhatsApp */}
             <a
