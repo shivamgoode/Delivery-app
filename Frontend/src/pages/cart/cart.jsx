@@ -22,9 +22,12 @@ const Cart = () => {
 
   const handleCheckout = () => {
     if (!token) {
-      alert("⚠️ Please login first to proceed to checkout.");
+      // Show popup instead of alert
+      setPopupMessage("⚠️ Please login first to proceed to checkout.");
+      setShowPopup(true);
+      setTimeout(() => setShowPopup(false), 3000);
     } else {
-      navigate("/placeorder"); // discount & promoCode are now in context
+      navigate("/placeorder");
     }
   };
 
@@ -41,6 +44,7 @@ const Cart = () => {
 
   return (
     <div className="cart" id="cart">
+      {/* Popup container */}
       {showPopup && <div className="popup-message">{popupMessage}</div>}
 
       <div className="cart-items">
