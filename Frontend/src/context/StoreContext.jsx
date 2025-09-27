@@ -101,20 +101,26 @@ const StoreContextProvider = (props) => {
       setCartItems({});
     }
   };
-const applyPromoCode = () => {
+const applyPromoCode = (code) => {
   let discountValue = 0;
 
-  if (promoCode === "ACT15") {
-  discountValue = getTotalCartAmount() * 0.15;
-} else if (promoCode === "BIHAR15") {
-  discountValue = getTotalCartAmount() * 0.15; 
-} else {   // ✅ correctly closed previous block
-  setDiscount(0);
-  setPopupMessage("❌ Invalid Promocode");
-  setShowPopup(true);
-  return;
-}
+  if (code === "ACT15") {
+    discountValue = getTotalCartAmount() * 0.15;
+  } else if (code === "BIHAR15") {
+    discountValue = getTotalCartAmount() * 0.15;
+  } else {
+    setDiscount(0);
+    setPromoCode("");
+    return { success: false, message: "❌ Invalid Promocode" };
+  }
 
+  setDiscount(discountValue);
+  setPromoCode(code);
+  return {
+    success: true,
+    message: `✅ Promocode applied! You saved ₹${discountValue.toFixed(2)} 🎉`
+  };
+};
 
   setDiscount(discountValue);
   setPopupMessage(`✅ Promocode applied! You saved ₹${discountValue.toFixed(2)} 🎉`);
