@@ -26,13 +26,11 @@ const Cart = () => {
   const applyPromoCode = () => {
     let discountValue = 0;
 
-    if (promoCode === "DISCOUNT10") {
-      discountValue = getTotalCartAmount() * 0.1; // 10% discount
-    } else if (promoCode === "SAVE50") {
-      discountValue = 50; // flat ₹50 discount
-    } else if (promoCode === "FREESHIP") {
-      discountValue = 50; // wave off delivery fee
-    } else {
+    if (promoCode === "ACT15") {
+      discountValue = getTotalCartAmount() * 0.15;
+    } else if (promoCode === "BIHAR15") {
+      discountValue = getTotalCartAmount() * 0.15; 
+     else {
       setDiscount(0);
       setPopupMessage("❌ Invalid Promocode");
       setShowPopup(true);
