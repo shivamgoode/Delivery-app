@@ -137,15 +137,15 @@
 }
 
 /* Mobile & Small Mobile (≤750px) */
+/* Mobile & Small Mobile (≤750px) */
 @media (max-width: 750px) {
   /* Hide menu and search icon */
   .navbar-menu,
-  .navbar-right,
   .navbar-search-icon {
     display: none;
   }
 
-  /* Only show logo + profile + sign-in button */
+  /* Navbar layout */
   .navbar {
     flex-direction: row; /* logo on left, right side items on right */
     justify-content: space-between;
@@ -158,17 +158,20 @@
   }
 
   .navbar-right {
-    gap: 10px; /* adjust spacing between profile and sign-in button */
+    display: flex; /* ✅ keep it visible */
+    align-items: center;
+    gap: 10px;
   }
 
-  /* Show only profile and sign-in button in navbar-right */
+  /* Show only profile image + sign-in button */
   .navbar-right img {
     display: inline-block; /* profile image */
   }
   .navbar-right button {
     display: inline-block; /* sign-in button */
   }
-  /* Hide any other items in navbar-right */
+
+  /* Hide other items inside navbar-right */
   .navbar-right > *:not(img):not(button) {
     display: none;
   }
