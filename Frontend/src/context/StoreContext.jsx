@@ -104,13 +104,11 @@ const StoreContextProvider = (props) => {
   const applyPromoCode = (code) => {
   let discountValue = 0;
 
-  if (code === "DISCOUNT10") {
-    discountValue = getTotalCartAmount() * 0.1; // 10% discount
-  } else if (code === "SAVE50") {
-    discountValue = 50; // flat ₹50 discount
-  } else if (code === "FREESHIP") {
-    discountValue = 50; // waive delivery fee
-  } else {
+  if (code === "ACT15") {
+    discountValue = getTotalCartAmount() * 0.15; 
+  } else if (code === "BIHAR15") {
+    discountValue = getTotalCartAmount() * 0.15; 
+  }  else {
     setDiscount(0);
     setPromoCode("");
     return { success: false, message: "❌ Invalid Promocode" };
