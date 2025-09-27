@@ -5,8 +5,15 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const Placeorder = () => {
-  const { getTotalCartAmount, token, food_list, cartItems, url, discount, promoCode } =
-    useContext(StoreContext);
+  const {
+    getTotalCartAmount,
+    token,
+    food_list,
+    cartItems,
+    url,
+    discount,
+    promoCode,
+  } = useContext(StoreContext);
 
   const [data, setData] = useState({
     firstName: "",
@@ -26,6 +33,9 @@ const Placeorder = () => {
   // ✅ dynamic delivery fee
   const deliveryFee =
     getTotalCartAmount() === 0 ? 0 : paymentMethod === "cod" ? 30 : 50;
+
+  const subtotal = getTotalCartAmount();
+  const total = subtotal + deliveryFee - discount; // ✅ subtract discount
 
   const onChangeHandler = (event) => {
     const { name, value } = event.target;
@@ -50,27 +60,22 @@ const Placeorder = () => {
     let orderData = {
       address: data,
       items: orderItems,
-      amount: getTotalCartAmount() + deliveryFee - discount, // ✅ use dynamic deliveryFee
+      amount: total, // ✅ use updated total
       paymentMethod,
+      promoCode,     // ✅ send promoCode too if needed backend
+      discount,      // ✅ send discount too if needed backend
     };
 
     try {
       if (paymentMethod === "online") {
-        const response = await axios.post(
-          url + "/api/orders/place",
-          orderData,
-          { headers: { token } }
-        );
+        const response = await axios.post(url + "/api/orders/place", orderData, {
+          headers: { token },
+        });
+
         if (response.data.success) {
           const { session_url } = response.data;
-          // ✅ Stripe checkout redirect
           window.location.replace(session_url);
-
-          // ✅ After successful payment (backend redirect or success hook)
-          // For now, also ensure navigation to MyOrders
-          setTimeout(() => {
-            navigate("/myorders");
-          }, 2000); // wait a bit to let Stripe redirect
+          setTimeout(() => navigate("/myorders"), 2000);
         } else {
           alert("Something went wrong, please try again later.");
         }
@@ -78,9 +83,10 @@ const Placeorder = () => {
         const response = await axios.post(url + "/api/orders/cod", orderData, {
           headers: { token },
         });
+
         if (response.data.success) {
           alert("✅ Order placed successfully (Cash on Delivery).");
-          navigate("/myorders"); // ✅ redirect to MyOrders
+          navigate("/myorders");
         } else {
           alert("❌ Failed to place order. Please try again.");
         }
@@ -92,12 +98,10 @@ const Placeorder = () => {
   };
 
   useEffect(() => {
-    if (!token) {
-      navigate("/cart");
-    } else if (getTotalCartAmount() === 0) {
+    if (!token || subtotal === 0) {
       navigate("/cart");
     }
-  }, [token]);
+  }, [token, subtotal]);
 
   return (
     <form onSubmit={placeOrderHandler} className="place-order">
@@ -189,7 +193,7 @@ const Placeorder = () => {
           <div>
             <div className="cart-total-detalis">
               <p>Subtotal</p>
-              <p>₹{getTotalCartAmount()}</p>
+              <p>₹{subtotal}</p>
             </div>
             <hr />
             <div className="cart-total-detalis">
@@ -197,9 +201,15 @@ const Placeorder = () => {
               <p>₹{deliveryFee}</p>
             </div>
             <hr />
+            {discount > 0 && (
+              <div className="cart-total-detalis">
+                <p>Discount ({promoCode})</p>
+                <p>- ₹{discount.toFixed(2)}</p>
+              </div>
+            )}
             <div className="cart-total-detalis">
               <b>Total</b>
-              <b>₹{getTotalCartAmount() + deliveryFee}</b>
+              <b>₹{total}</b>
             </div>
           </div>
 
@@ -238,3 +248,4 @@ const Placeorder = () => {
 };
 
 export default Placeorder;
+
