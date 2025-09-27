@@ -19,7 +19,14 @@ const Footer = () => {
           </p>
           <div className="footer-social-icon">
             <img className="fb" src={assets.facebook_icon} alt="facebook" />
-            <img className="twit" src={assets.whatsapp} alt="twitter" />
+            {/* ✅ WhatsApp Redirect */}
+<a
+  href="https://wa.me/916206322775"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  <img className="twit" src={assets.whatsapp} alt="whatsapp" />
+</a>
 
             {/* ✅ Instagram Icon Redirect */}
             <a
