@@ -13,11 +13,10 @@ const StoreContextProvider = (props) => {
   const [promoCode, setPromoCode] = useState(""); // stores applied promo code
   const [discount, setDiscount] = useState(0);   // stores current discount
 
-
   // Handle token safely
   const setToken = (t) => {
     setTokenState(t);
-  if (t) {
+    if (t) {
       localStorage.setItem("token", t);
       setLoggedOut(false);
     } else {
@@ -34,11 +33,7 @@ const StoreContextProvider = (props) => {
 
     if (token) {
       try {
-        await axios.post(
-          url + "/api/cart/add",
-          { itemId },
-          { headers: { token } }
-        );
+        await axios.post(url + "/api/cart/add", { itemId }, { headers: { token } });
       } catch (err) {
         console.error("Add to cart failed:", err);
       }
@@ -56,11 +51,7 @@ const StoreContextProvider = (props) => {
 
     if (token) {
       try {
-        await axios.post(
-          url + "/api/cart/remove",
-          { itemId },
-          { headers: { token } }
-        );
+        await axios.post(url + "/api/cart/remove", { itemId }, { headers: { token } });
       } catch (err) {
         console.error("Remove from cart failed:", err);
       }
@@ -90,63 +81,51 @@ const StoreContextProvider = (props) => {
 
   const loadCartData = async (t) => {
     try {
-      const response = await axios.post(
-        url + "/api/cart/get",
-        {},
-        { headers: { token: t } }
-      );
-      setCartItems(response.data.cartData || {}); // ✅ ensure it's always an object
+      const response = await axios.post(url + "/api/cart/get", {}, { headers: { token: t } });
+      setCartItems(response.data.cartData || {});
     } catch (err) {
       console.error("Load cart data failed:", err);
       setCartItems({});
     }
   };
-const applyPromoCode = (code) => {
-  let discountValue = 0;
 
-  if (code === "ACT15") {
-    discountValue = getTotalCartAmount() * 0.15;
-  } else if (code === "BIHAR15") {
-    discountValue = getTotalCartAmount() * 0.15;
-  } else {
-    setDiscount(0);
-    setPromoCode("");
-    return { success: false, message: "❌ Invalid Promocode" };
-  }
+  // ✅ Promo code logic
+  const applyPromoCode = (code) => {
+    let discountValue = 0;
 
-  setDiscount(discountValue);
-  setPromoCode(code);
-  return {
-    success: true,
-    message: `✅ Promocode applied! You saved ₹${discountValue.toFixed(2)} 🎉`
+    if (code === "ACT15") {
+      discountValue = getTotalCartAmount() * 0.15;
+    } else if (code === "BIHAR15") {
+      discountValue = getTotalCartAmount() * 0.15;
+    } else {
+      setDiscount(0);
+      setPromoCode("");
+      return { success: false, message: "❌ Invalid Promocode" };
+    }
+
+    setDiscount(discountValue);
+    setPromoCode(code);
+    return {
+      success: true,
+      message: `✅ Promocode applied! You saved ₹${discountValue.toFixed(2)} 🎉`
+    };
   };
-};
 
-  setDiscount(discountValue);
-  setPopupMessage(`✅ Promocode applied! You saved ₹${discountValue.toFixed(2)} 🎉`);
-  setShowPopup(true);
-  setTimeout(() => setShowPopup(false), 3000); // hide popup after 3 sec
-};
-
-
-const clearPromoCode = () => {
-  setPromoCode("");
-  setDiscount(0);
-};
-
+  const clearPromoCode = () => {
+    setPromoCode("");
+    setDiscount(0);
+  };
 
   // Load data on app start
   useEffect(() => {
     const loadData = async () => {
       await fetchFoodList();
-
       const savedToken = localStorage.getItem("token");
       if (savedToken && !loggedOut) {
         setTokenState(savedToken);
         await loadCartData(savedToken);
       }
     };
-
     loadData();
   }, [loggedOut]);
 
@@ -160,17 +139,13 @@ const clearPromoCode = () => {
     url,
     token,
     setToken,
-    promoCode,        // ✅ new
-    discount,         // ✅ new
-    applyPromoCode,   // ✅ new
-    clearPromoCode,   // ✅ new
+    promoCode,
+    discount,
+    applyPromoCode,
+    clearPromoCode
   };
 
-  return (
-    <StoreContext.Provider value={contextValue}>
-      {props.children}
-    </StoreContext.Provider>
-  );
+  return <StoreContext.Provider value={contextValue}>{props.children}</StoreContext.Provider>;
 };
 
 export default StoreContextProvider;
