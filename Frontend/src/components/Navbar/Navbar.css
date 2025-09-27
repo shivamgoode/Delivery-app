@@ -158,21 +158,20 @@
   }
 
   .navbar-right {
-    display: flex; /* ✅ keep it visible */
+    display: flex;
     align-items: center;
     gap: 10px;
   }
 
-  /* Show only profile image + sign-in button */
+  /* Profile image */
   .navbar-right img {
-    display: inline-block; /* profile image */
-  }
-  .navbar-right button {
-    display: inline-block; /* sign-in button */
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
   }
 
-  /* Hide other items inside navbar-right */
-  .navbar-right > *:not(img):not(button) {
-    display: none;
+  /* Sign-in button */
+  .navbar-right button {
+    display: inline-block;
   }
 }
