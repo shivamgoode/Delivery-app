@@ -65,22 +65,33 @@ const removeFood = async (req, res) => {
 };
 
 // ==================== Add Review ====================
-// Add a review
- const addReview = async (req, res) => {
+// This assumes you have an auth middleware that adds `req.user`
+const addReview = async (req, res) => {
   try {
     const { foodId } = req.params;
     const { text } = req.body;
 
-    if (!text) return res.status(400).json({ success: false, message: "Review text is required" });
+    if (!text)
+      return res
+        .status(400)
+        .json({ success: false, message: "Review text is required" });
+
+    if (!req.user)
+      return res
+        .status(401)
+        .json({ success: false, message: "Authentication required" });
 
     const food = await foodModel.findById(foodId);
-    if (!food) return res.status(404).json({ success: false, message: "Food item not found" });
+    if (!food)
+      return res
+        .status(404)
+        .json({ success: false, message: "Food item not found" });
 
-    // Add review
     const review = {
-      userName: req.user.name || "Anonymous", // from auth middleware
+      userName: req.user.name || "Anonymous",
       text,
     };
+
     food.reviews = food.reviews || [];
     food.reviews.push(review);
 
@@ -93,18 +104,22 @@ const removeFood = async (req, res) => {
   }
 };
 
-// Get reviews
+// ==================== Get Reviews ====================
 const getReviews = async (req, res) => {
   try {
     const { foodId } = req.params;
     const food = await foodModel.findById(foodId);
 
-    if (!food) return res.status(404).json({ success: false, message: "Food item not found" });
+    if (!food)
+      return res
+        .status(404)
+        .json({ success: false, message: "Food item not found" });
 
-    res.json({ reviews: food.reviews || [] });
+    res.json({ success: true, reviews: food.reviews || [] });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
 export { addFood, listFood, removeFood, addReview, getReviews };
