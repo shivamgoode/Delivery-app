@@ -66,7 +66,7 @@ const removeFood = async (req, res) => {
 
 // ==================== Add Review ====================
 // Add a review
-export const addReview = async (req, res) => {
+ const addReview = async (req, res) => {
   try {
     const { foodId } = req.params;
     const { text } = req.body;
@@ -94,7 +94,7 @@ export const addReview = async (req, res) => {
 };
 
 // Get reviews
-export const getReviews = async (req, res) => {
+const getReviews = async (req, res) => {
   try {
     const { foodId } = req.params;
     const food = await foodModel.findById(foodId);
