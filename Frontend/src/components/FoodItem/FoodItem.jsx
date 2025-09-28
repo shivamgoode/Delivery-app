@@ -142,10 +142,16 @@ const FoodItem = ({ id, name, price, description, image }) => {
             </div>
 
             {/* Add New Review */}
+            <label htmlFor={`review-${id}`} className="review-label">
+              Your Review
+            </label>
             <textarea
+              id={`review-${id}`}      // ✅ unique id
+              name="review"            // ✅ name attribute
               value={newReview}
               onChange={(e) => setNewReview(e.target.value)}
               placeholder="Write your review..."
+              autoComplete="off"
             />
             <button onClick={submitReview} className="submit-review-btn">
               Submit Review
@@ -158,3 +164,4 @@ const FoodItem = ({ id, name, price, description, image }) => {
 };
 
 export default FoodItem;
+
