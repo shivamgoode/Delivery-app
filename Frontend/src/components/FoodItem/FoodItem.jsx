@@ -4,14 +4,14 @@ import { useContext, useState } from "react";
 import { StoreContext } from "../../context/StoreContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import axios from "axios";
 
 const FoodItem = ({ id, name, price, description, image }) => {
   const {
     cartItems = {},
     addToCart,
     removeFromCart,
-    url,
+    addReview,
+    getReviews,
   } = useContext(StoreContext);
 
   const navigate = useNavigate();
@@ -31,19 +31,17 @@ const FoodItem = ({ id, name, price, description, image }) => {
     }
   };
 
-  // Fetch reviews for this food item
+  // Fetch reviews for this food item (using context)
   const fetchReviews = async () => {
     try {
-      const response = await axios.get(`${url}/api/reviews/${id}`);
-      if (response.data && response.data.reviews) {
-        setReviews(response.data.reviews);
-      }
+      const data = await getReviews(id);
+      setReviews(data);
     } catch (err) {
       console.error("Error fetching reviews", err);
     }
   };
 
-  // Submit new review
+  // Submit new review (using context)
   const submitReview = async () => {
     if (!newReview.trim()) {
       toast.error("Please write a review before submitting.");
@@ -51,13 +49,13 @@ const FoodItem = ({ id, name, price, description, image }) => {
     }
 
     try {
-      const response = await axios.post(`${url}/api/reviews/${id}`, {
-        text: newReview,
-      });
-      if (response.data.success) {
+      const response = await addReview(id, newReview);
+      if (response.success) {
         setNewReview("");
         fetchReviews(); // refresh reviews
         toast.success("Review submitted!");
+      } else {
+        toast.error(response.message || "Failed to submit review");
       }
     } catch (err) {
       toast.error("Failed to submit review");
@@ -135,7 +133,7 @@ const FoodItem = ({ id, name, price, description, image }) => {
               {reviews.length > 0 ? (
                 reviews.map((rev, idx) => (
                   <p key={idx} className="review-item">
-                    {rev.text}
+                    <strong>{rev.userName || "Anonymous"}:</strong> {rev.text}
                   </p>
                 ))
               ) : (
