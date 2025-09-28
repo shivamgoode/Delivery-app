@@ -13,7 +13,7 @@ const StoreContextProvider = (props) => {
   const [promoCode, setPromoCode] = useState(""); // stores applied promo code
   const [discount, setDiscount] = useState(0);   // stores current discount
 
-  // Handle token safely
+  // ====================== Token ======================
   const setToken = (t) => {
     setTokenState(t);
     if (t) {
@@ -25,6 +25,7 @@ const StoreContextProvider = (props) => {
     }
   };
 
+  // ====================== Cart ======================
   const addToCart = async (itemId) => {
     setCartItems((prev) => ({
       ...prev,
@@ -69,6 +70,7 @@ const StoreContextProvider = (props) => {
     return totalAmount;
   };
 
+  // ====================== Food ======================
   const fetchFoodList = async () => {
     try {
       const response = await axios.get(`${url}/api/food/list`);
@@ -79,6 +81,7 @@ const StoreContextProvider = (props) => {
     }
   };
 
+  // ====================== Cart Data ======================
   const loadCartData = async (t) => {
     try {
       const response = await axios.post(url + "/api/cart/get", {}, { headers: { token: t } });
@@ -89,13 +92,11 @@ const StoreContextProvider = (props) => {
     }
   };
 
-  // ✅ Promo code logic
+  // ====================== Promo Code ======================
   const applyPromoCode = (code) => {
     let discountValue = 0;
 
-    if (code === "ACT15") {
-      discountValue = getTotalCartAmount() * 0.15;
-    } else if (code === "BIHAR15") {
+    if (code === "ACT15" || code === "BIHAR15") {
       discountValue = getTotalCartAmount() * 0.15;
     } else {
       setDiscount(0);
@@ -116,7 +117,32 @@ const StoreContextProvider = (props) => {
     setDiscount(0);
   };
 
-  // Load data on app start
+  // ====================== Reviews ======================
+  const addReview = async (foodId, text) => {
+    try {
+      const response = await axios.post(
+        `${url}/api/food/${foodId}/reviews`,
+        { text },
+        { headers: { token } }
+      );
+      return response.data;
+    } catch (err) {
+      console.error("Add review failed:", err);
+      return { success: false, message: "Failed to add review" };
+    }
+  };
+
+  const getReviews = async (foodId) => {
+    try {
+      const response = await axios.get(`${url}/api/food/${foodId}/reviews`);
+      return response.data.reviews || [];
+    } catch (err) {
+      console.error("Fetch reviews failed:", err);
+      return [];
+    }
+  };
+
+  // ====================== Load Data ======================
   useEffect(() => {
     const loadData = async () => {
       await fetchFoodList();
@@ -129,6 +155,7 @@ const StoreContextProvider = (props) => {
     loadData();
   }, [loggedOut]);
 
+  // ====================== Context Value ======================
   const contextValue = {
     food_list,
     cartItems,
@@ -142,7 +169,9 @@ const StoreContextProvider = (props) => {
     promoCode,
     discount,
     applyPromoCode,
-    clearPromoCode
+    clearPromoCode,
+    addReview,     // ✅ expose review functions
+    getReviews     // ✅ expose review functions
   };
 
   return <StoreContext.Provider value={contextValue}>{props.children}</StoreContext.Provider>;
