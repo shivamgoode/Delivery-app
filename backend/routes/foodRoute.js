@@ -20,7 +20,10 @@ const upload =multer ({storage:storage})
 foodRouter.post("/add",upload.single("image"),addFood);
 foodRouter.get("/list",listFood);
 foodRouter.post("/remove",removeFood);
-foodRouter.post("/:foodId/reviews", auth, addReview);
-foodRouter.get("/:foodId/reviews", getReviews);
+// Add review (authenticated)
+router.post("/:foodId", authMiddleware, addReview);
+
+// Get reviews (public)
+router.get("/:foodId", getReviews);
 
 export default foodRouter;
