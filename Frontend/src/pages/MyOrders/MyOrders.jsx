@@ -65,7 +65,16 @@ const MyOrders = () => {
             <p>₹{order.amount?.toFixed(2) || "0.00"}</p>
             <p>Items: {Array.isArray(order.items) ? order.items.length : 0}</p>
             <p>
-              <span> &#x25cf; </span>
+              <span
+                style={{
+                  color:
+                    order.status?.toLowerCase() === "cancelled"
+                      ? "red"
+                      : "green",
+                }}
+              >
+                &#x25cf;
+              </span>{" "}
               <b>{order.status || "Pending"}</b>
             </p>
             <button onClick={() => handleTrackOrder(order)}>Track Order</button>
