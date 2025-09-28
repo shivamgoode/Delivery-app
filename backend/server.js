@@ -8,6 +8,7 @@ import cartRouter from "./routes/cartRoute.js"
 import orderRouter from "./routes/orderRoute.js";
 import connectCloudinary from "./config/cloudinary.js";
 import { fileURLToPath } from "url";
+import path from "path"
 
 // app config
 const app = express();
