@@ -6,6 +6,7 @@ import { assets } from "../../assets/assets";
 
 const MyOrders = () => {
   const [data, setData] = useState([]);
+  const [selectedOrder, setSelectedOrder] = useState(null); // For popup
   const { url, token } = useContext(StoreContext);
 
   const fetchOrders = async () => {
@@ -32,6 +33,16 @@ const MyOrders = () => {
     }
   }, [token]);
 
+  // Open popup
+  const handleTrackOrder = (order) => {
+    setSelectedOrder(order);
+  };
+
+  // Close popup
+  const closePopup = () => {
+    setSelectedOrder(null);
+  };
+
   return (
     <div className="my-orders">
       <h2>My Orders</h2>
@@ -57,13 +68,38 @@ const MyOrders = () => {
               <span> &#x25cf; </span>
               <b>{order.status || "Pending"}</b>
             </p>
-            <button onClick={fetchOrders}>Track Order</button>
+            <button onClick={() => handleTrackOrder(order)}>Track Order</button>
           </div>
         ))}
       </div>
+
+      {/* Popup Modal */}
+      {selectedOrder && (
+        <div className="popup-overlay">
+          <div className="popup-content">
+            <button className="popup-close" onClick={closePopup}>
+              &times;
+            </button>
+            <h3>Order Status</h3>
+            <p>
+              <b>Status:</b> {selectedOrder.status || "Pending"}
+            </p>
+            <p>
+              <b>Amount:</b> ₹{selectedOrder.amount?.toFixed(2) || "0.00"}
+            </p>
+            <p>
+              <b>Items:</b>{" "}
+              {Array.isArray(selectedOrder.items)
+                ? selectedOrder.items
+                    .map((item) => `${item.name} x ${item.quantity}`)
+                    .join(", ")
+                : "No items"}
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 export default MyOrders;
-
