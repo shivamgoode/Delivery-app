@@ -28,14 +28,16 @@ const Placeorder = () => {
   });
 
   const [paymentMethod, setPaymentMethod] = useState("online");
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
   const navigate = useNavigate();
 
-  // ✅ dynamic delivery fee
+  // Dynamic delivery fee
   const deliveryFee =
     getTotalCartAmount() === 0 ? 0 : paymentMethod === "cod" ? 30 : 50;
 
   const subtotal = getTotalCartAmount();
-  const total = subtotal + deliveryFee - discount; // ✅ subtract discount
+  const total = subtotal + deliveryFee - discount;
 
   const onChangeHandler = (event) => {
     const { name, value } = event.target;
@@ -43,6 +45,11 @@ const Placeorder = () => {
       ...prevData,
       [name]: value,
     }));
+  };
+
+  const closePopup = () => {
+    setShowPopup(false);
+    navigate("/myorders");
   };
 
   const placeOrderHandler = async (event) => {
@@ -60,10 +67,10 @@ const Placeorder = () => {
     let orderData = {
       address: data,
       items: orderItems,
-      amount: total, // ✅ use updated total
+      amount: total,
       paymentMethod,
-      promoCode,     // ✅ send promoCode too if needed backend
-      discount,      // ✅ send discount too if needed backend
+      promoCode,
+      discount,
     };
 
     try {
@@ -85,8 +92,8 @@ const Placeorder = () => {
         });
 
         if (response.data.success) {
-          alert("✅ Order placed successfully (Cash on Delivery).");
-          navigate("/myorders");
+          setPopupMessage("✅ Order placed successfully (Cash on Delivery)!");
+          setShowPopup(true);
         } else {
           alert("❌ Failed to place order. Please try again.");
         }
@@ -104,148 +111,165 @@ const Placeorder = () => {
   }, [token, subtotal]);
 
   return (
-    <form onSubmit={placeOrderHandler} className="place-order">
-      {/* left side delivery info */}
-      <div className="place-order-left">
-        <p className="title">Delivery Information</p>
-        <div className="multi-fields">
+    <>
+      <form onSubmit={placeOrderHandler} className="place-order">
+        {/* left side delivery info */}
+        <div className="place-order-left">
+          <p className="title">Delivery Information</p>
+          <div className="multi-fields">
+            <input
+              name="firstName"
+              onChange={onChangeHandler}
+              value={data.firstName}
+              type="text"
+              placeholder="First Name"
+            />
+            <input
+              required
+              name="lastName"
+              onChange={onChangeHandler}
+              value={data.lastName}
+              type="text"
+              placeholder="Last Name"
+            />
+          </div>
           <input
-            name="firstName"
+            name="email"
             onChange={onChangeHandler}
-            value={data.firstName}
-            type="text"
-            placeholder="First Name"
+            value={data.email}
+            type="email"
+            placeholder="Email "
           />
           <input
             required
-            name="lastName"
+            name="street"
             onChange={onChangeHandler}
-            value={data.lastName}
+            value={data.street}
             type="text"
-            placeholder="Last Name"
+            placeholder="Street"
+          />
+          <div className="multi-fields">
+            <input
+              required
+              name="city"
+              onChange={onChangeHandler}
+              value={data.city}
+              type="text"
+              placeholder="City"
+            />
+            <input
+              required
+              name="state"
+              onChange={onChangeHandler}
+              value={data.state}
+              type="text"
+              placeholder="State"
+            />
+          </div>
+          <div className="multi-fields">
+            <input
+              required
+              name="zipcode"
+              onChange={onChangeHandler}
+              value={data.zipcode}
+              type="text"
+              placeholder="Zip code"
+            />
+            <input
+              required
+              name="country"
+              onChange={onChangeHandler}
+              value={data.country}
+              type="text"
+              placeholder="Country"
+            />
+          </div>
+          <input
+            required
+            name="phone"
+            onChange={onChangeHandler}
+            value={data.phone}
+            type="text"
+            placeholder="Phone"
           />
         </div>
-        <input
-          name="email"
-          onChange={onChangeHandler}
-          value={data.email}
-          type="email"
-          placeholder="Email "
-        />
-        <input
-          required
-          name="street"
-          onChange={onChangeHandler}
-          value={data.street}
-          type="text"
-          placeholder="Street"
-        />
-        <div className="multi-fields">
-          <input
-            required
-            name="city"
-            onChange={onChangeHandler}
-            value={data.city}
-            type="text"
-            placeholder="City"
-          />
-          <input
-            required
-            name="state"
-            onChange={onChangeHandler}
-            value={data.state}
-            type="text"
-            placeholder="State"
-          />
-        </div>
-        <div className="multi-fields">
-          <input
-            required
-            name="zipcode"
-            onChange={onChangeHandler}
-            value={data.zipcode}
-            type="text"
-            placeholder="Zip code"
-          />
-          <input
-            required
-            name="country"
-            onChange={onChangeHandler}
-            value={data.country}
-            type="text"
-            placeholder="Country"
-          />
-        </div>
-        <input
-          required
-          name="phone"
-          onChange={onChangeHandler}
-          value={data.phone}
-          type="text"
-          placeholder="Phone"
-        />
-      </div>
 
-      {/* right side cart & payment */}
-      <div className="place-order-right">
-        <div className="cart-total">
-          <h2>Cart Total</h2>
-          <div>
-            <div className="cart-total-detalis">
-              <p>Subtotal</p>
-              <p>₹{subtotal}</p>
-            </div>
-            <hr />
-            <div className="cart-total-detalis">
-              <p>Delivery Fee</p>
-              <p>₹{deliveryFee}</p>
-            </div>
-            <hr />
-            {discount > 0 && (
+        {/* right side cart & payment */}
+        <div className="place-order-right">
+          <div className="cart-total">
+            <h2>Cart Total</h2>
+            <div>
               <div className="cart-total-detalis">
-                <p>Discount ({promoCode})</p>
-                <p>- ₹{discount.toFixed(2)}</p>
+                <p>Subtotal</p>
+                <p>₹{subtotal}</p>
               </div>
-            )}
-            <div className="cart-total-detalis">
-              <b>Total</b>
-              <b>₹{total}</b>
+              <hr />
+              <div className="cart-total-detalis">
+                <p>Delivery Fee</p>
+                <p>₹{deliveryFee}</p>
+              </div>
+              <hr />
+              {discount > 0 && (
+                <div className="cart-total-detalis">
+                  <p>Discount ({promoCode})</p>
+                  <p>- ₹{discount.toFixed(2)}</p>
+                </div>
+              )}
+              <div className="cart-total-detalis">
+                <b>Total</b>
+                <b>₹{total}</b>
+              </div>
             </div>
-          </div>
 
-          <div className="payment-method">
-            <h3>Choose Payment Method</h3>
-            <label>
-              <input
-                type="radio"
-                name="payment"
-                value="online"
-                checked={paymentMethod === "online"}
-                onChange={() => setPaymentMethod("online")}
-              />
-              Online Payment (Stripe)
-            </label>
-            <br />
-            <label>
-              <input
-                type="radio"
-                name="payment"
-                value="cod"
-                checked={paymentMethod === "cod"}
-                onChange={() => setPaymentMethod("cod")}
-              />
-              Cash on Delivery (₹30 delivery fee)
-            </label>
-          </div>
+            <div className="payment-method">
+              <h3>Choose Payment Method</h3>
+              <label>
+                <input
+                  type="radio"
+                  name="payment"
+                  value="online"
+                  checked={paymentMethod === "online"}
+                  onChange={() => setPaymentMethod("online")}
+                />
+                Online Payment (Stripe)
+              </label>
+              <br />
+              <label>
+                <input
+                  type="radio"
+                  name="payment"
+                  value="cod"
+                  checked={paymentMethod === "cod"}
+                  onChange={() => setPaymentMethod("cod")}
+                />
+                Cash on Delivery (₹30 delivery fee)
+              </label>
+            </div>
 
-          <button type="submit">
-            {paymentMethod === "online" ? "PROCEED TO PAYMENT" : "PLACE ORDER"}
-          </button>
+            <button type="submit">
+              {paymentMethod === "online" ? "PROCEED TO PAYMENT" : "PLACE ORDER"}
+            </button>
+          </div>
         </div>
-      </div>
-    </form>
+      </form>
+
+      {/* Order Popup */}
+      {showPopup && (
+        <div className="order-popup-overlay">
+          <div className="order-popup">
+            <button className="popup-close" onClick={closePopup}>
+              &times;
+            </button>
+            <h3>Order Placed!</h3>
+            <p>{popupMessage}</p>
+            <p>
+              <b>Total Paid:</b> ₹{total.toFixed(2)}
+            </p>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
 export default Placeorder;
-
