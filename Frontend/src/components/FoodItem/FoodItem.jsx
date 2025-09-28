@@ -10,29 +10,29 @@ const FoodItem = ({ id, name, price, description, image }) => {
     cartItems = {},
     addToCart,
     removeFromCart,
-    addReview,
-    getReviews,
+    addReview,   // from context
+    getReviews,  // from context
+    token        // get token from context
   } = useContext(StoreContext);
 
   const navigate = useNavigate();
 
   const [showReviewModal, setShowReviewModal] = useState(false);
-  const [reviews, setReviews] = useState([]); // store reviews
-  const [newReview, setNewReview] = useState(""); // input state
+  const [reviews, setReviews] = useState([]);
+  const [newReview, setNewReview] = useState("");
 
-  // Function to handle "Buy Now" button
   const handleBuyNow = async () => {
     try {
-      await addToCart(id); // add item to cart
-      navigate("/cart"); // redirect to cart page
+      await addToCart(id);
+      navigate("/cart");
     } catch (err) {
       toast.error("Failed to add item to cart");
       console.error(err);
     }
   };
 
-  // Fetch reviews for this food item (using context)
   const fetchReviews = async () => {
+    if (!token) return;
     try {
       const data = await getReviews(id);
       setReviews(data);
@@ -41,18 +41,23 @@ const FoodItem = ({ id, name, price, description, image }) => {
     }
   };
 
-  // Submit new review (using context)
-  const submitReview = async () => {
+  const submitReview = async (e) => {
+    e.preventDefault(); // ✅ prevent default behavior if inside form
     if (!newReview.trim()) {
       toast.error("Please write a review before submitting.");
       return;
     }
 
+    if (!token) {
+      toast.error("You must be logged in to submit a review");
+      return;
+    }
+
     try {
       const response = await addReview(id, newReview);
-      if (response.success) {
+      if (response && response.success) {
         setNewReview("");
-        fetchReviews(); // refresh reviews
+        fetchReviews();
         toast.success("Review submitted!");
       } else {
         toast.error(response.message || "Failed to submit review");
@@ -63,7 +68,6 @@ const FoodItem = ({ id, name, price, description, image }) => {
     }
   };
 
-  // Open modal and fetch reviews
   const handleOpenReview = () => {
     setShowReviewModal(true);
     fetchReviews();
@@ -100,7 +104,6 @@ const FoodItem = ({ id, name, price, description, image }) => {
       <div className="food-item-info">
         <div className="food-item-name-rating">
           <p>{name}</p>
-          {/* ⭐ Clickable Rating Star (opens review popup) */}
           <img
             src={assets.rating_starts}
             alt="Rating"
@@ -110,7 +113,6 @@ const FoodItem = ({ id, name, price, description, image }) => {
         </div>
         <p className="food-item-desc">{description}</p>
         <p className="food-item-price">₹{price}</p>
-        {/* Buy Now Button */}
         <button className="buy-now-btn" onClick={handleBuyNow}>
           Buy Now
         </button>
@@ -128,7 +130,6 @@ const FoodItem = ({ id, name, price, description, image }) => {
             </button>
             <h3>Reviews for {name}</h3>
 
-            {/* Review List */}
             <div className="review-list">
               {reviews.length > 0 ? (
                 reviews.map((rev, idx) => (
@@ -141,21 +142,23 @@ const FoodItem = ({ id, name, price, description, image }) => {
               )}
             </div>
 
-            {/* Add New Review */}
-            <label htmlFor={`review-${id}`} className="review-label">
-              Your Review
-            </label>
-            <textarea
-              id={`review-${id}`}      // ✅ unique id
-              name="review"            // ✅ name attribute
-              value={newReview}
-              onChange={(e) => setNewReview(e.target.value)}
-              placeholder="Write your review..."
-              autoComplete="off"
-            />
-            <button onClick={submitReview} className="submit-review-btn">
-              Submit Review
-            </button>
+            {/* Review Form */}
+            <form onSubmit={submitReview}>
+              <label htmlFor={`review-${id}`} className="review-label">
+                Your Review
+              </label>
+              <textarea
+                id={`review-${id}`}
+                name="review"
+                value={newReview}
+                onChange={(e) => setNewReview(e.target.value)}
+                placeholder="Write your review..."
+                autoComplete="off"
+              />
+              <button type="submit" className="submit-review-btn">
+                Submit Review
+              </button>
+            </form>
           </div>
         </div>
       )}
