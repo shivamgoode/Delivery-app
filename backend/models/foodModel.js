@@ -7,16 +7,14 @@ const foodSchema = new mongoose.Schema({
   image: { type: String },
   category: { type: String, required: true },
   imageUrl: { type: String, required: true },
-
-  // ✅ Reviews array (initially empty)
   reviews: [
     {
-      name: { type: String, required: true },   // Person who gave the review
-      text: { type: String, required: true },   // Review message
-      createdAt: { type: Date, default: Date.now } // Timestamp
+      userName: { type: String },
+      text: { type: String }
     }
   ]
 });
+
 
 const foodModel =
   mongoose.models.food || mongoose.model("food", foodSchema);
