@@ -21,9 +21,9 @@ foodRouter.post("/add",upload.single("image"),addFood);
 foodRouter.get("/list",listFood);
 foodRouter.post("/remove",removeFood);
 // Add review (authenticated)
-router.post("/:foodId", authMiddleware, addReview);
+foodRouter.post("/:foodId", authMiddleware, addReview);
 
 // Get reviews (public)
-router.get("/:foodId", getReviews);
+foodRouter.get("/:foodId", getReviews);
 
 export default foodRouter;
