@@ -118,29 +118,31 @@ const StoreContextProvider = (props) => {
   };
 
   // ====================== Reviews ======================
-  const addReview = async (foodId, text) => {
-    try {
-      const response = await axios.post(
-        `${url}/api/food/${foodId}/reviews`,
-        { text },
-        { headers: { token } }
-      );
-      return response.data;
-    } catch (err) {
-      console.error("Add review failed:", err);
-      return { success: false, message: "Failed to add review" };
-    }
-  };
+ const addReview = async (foodId, text) => {
+  if (!token) return { success: false, message: "Not authenticated" };
+  try {
+    const response = await axios.post(
+      `${url}/api/reviews/${foodId}`,
+      { text },
+      { headers: { token } }
+    );
+    return response.data; // should return { success: true, message: "..."}
+  } catch (err) {
+    console.error("Add review failed:", err);
+    return { success: false, message: "Failed to submit review" };
+  }
+};
 
-  const getReviews = async (foodId) => {
-    try {
-      const response = await axios.get(`${url}/api/food/${foodId}/reviews`);
-      return response.data.reviews || [];
-    } catch (err) {
-      console.error("Fetch reviews failed:", err);
-      return [];
-    }
-  };
+// Get all reviews for a food item
+const getReviews = async (foodId) => {
+  try {
+    const response = await axios.get(`${url}/api/reviews/${foodId}`);
+    return response.data.reviews || [];
+  } catch (err) {
+    console.error("Get reviews failed:", err);
+    return [];
+  }
+};
 
   // ====================== Load Data ======================
   useEffect(() => {
