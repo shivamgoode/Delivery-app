@@ -10,9 +10,9 @@ const FoodItem = ({ id, name, price, description, image }) => {
     cartItems = {},
     addToCart,
     removeFromCart,
-    addReview,   // from context
-    getReviews,  // from context
-    token        // get token from context
+    addReview,
+    getReviews,
+    token
   } = useContext(StoreContext);
 
   const navigate = useNavigate();
@@ -32,7 +32,6 @@ const FoodItem = ({ id, name, price, description, image }) => {
   };
 
   const fetchReviews = async () => {
-    if (!token) return;
     try {
       const data = await getReviews(id);
       setReviews(data);
@@ -42,20 +41,18 @@ const FoodItem = ({ id, name, price, description, image }) => {
   };
 
   const submitReview = async (e) => {
-    e.preventDefault(); // ✅ prevent default behavior if inside form
+    e.preventDefault();
     if (!newReview.trim()) {
       toast.error("Please write a review before submitting.");
       return;
     }
-
     if (!token) {
       toast.error("You must be logged in to submit a review");
       return;
     }
-
     try {
       const response = await addReview(id, newReview);
-      if (response && response.success) {
+      if (response.success) {
         setNewReview("");
         fetchReviews();
         toast.success("Review submitted!");
@@ -118,7 +115,6 @@ const FoodItem = ({ id, name, price, description, image }) => {
         </button>
       </div>
 
-      {/* Review Modal */}
       {showReviewModal && (
         <div className="review-modal-overlay">
           <div className="review-modal">
@@ -142,7 +138,6 @@ const FoodItem = ({ id, name, price, description, image }) => {
               )}
             </div>
 
-            {/* Review Form */}
             <form onSubmit={submitReview}>
               <label htmlFor={`review-${id}`} className="review-label">
                 Your Review
@@ -167,4 +162,3 @@ const FoodItem = ({ id, name, price, description, image }) => {
 };
 
 export default FoodItem;
-
