@@ -4,19 +4,16 @@ import { v2 as cloudinary } from "cloudinary";
 
 // ==================== Add Food ====================
 const addFood = async (req, res) => {
-  let image_filename = "";
-  if (req.file && req.file.filename) {
-    image_filename = req.file.filename;
-  }
-
-  const { name, description, price, category } = req.body;
-  if (!name || !description || !price || !category) {
-    return res
-      .status(400)
-      .json({ success: false, message: "All fields are required" });
-  }
-
   try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: "Image is required" });
+    }
+
+    const { name, description, price, category } = req.body;
+    if (!name || !description || !price || !category) {
+      return res.status(400).json({ success: false, message: "All fields are required" });
+    }
+
     const result = await cloudinary.uploader.upload(req.file.path);
 
     const food = new foodModel({
@@ -31,7 +28,7 @@ const addFood = async (req, res) => {
     await food.save();
     res.json({ success: true, message: "Food Added" });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.json({ success: false, message: "Error" });
   }
 };
@@ -42,7 +39,7 @@ const listFood = async (req, res) => {
     const foods = await foodModel.find({});
     res.json({ success: true, data: foods });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.json({ success: false, message: "Error" });
   }
 };
@@ -59,33 +56,28 @@ const removeFood = async (req, res) => {
     await foodModel.findByIdAndDelete(req.body._id);
     res.json({ success: true, message: "Food Removed" });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.json({ success: false, message: "Error" });
   }
 };
 
 // ==================== Add Review ====================
-// This assumes you have an auth middleware that adds `req.user`
 const addReview = async (req, res) => {
   try {
     const { foodId } = req.params;
     const { text } = req.body;
 
-    if (!text)
-      return res
-        .status(400)
-        .json({ success: false, message: "Review text is required" });
-
-    if (!req.user)
-      return res
-        .status(401)
-        .json({ success: false, message: "Authentication required" });
+    if (!text) {
+      return res.status(400).json({ success: false, message: "Review text is required" });
+    }
+    if (!req.user) {
+      return res.status(401).json({ success: false, message: "Authentication required" });
+    }
 
     const food = await foodModel.findById(foodId);
-    if (!food)
-      return res
-        .status(404)
-        .json({ success: false, message: "Food item not found" });
+    if (!food) {
+      return res.status(404).json({ success: false, message: "Food item not found" });
+    }
 
     const review = {
       userName: req.user.name || "Anonymous",
@@ -110,10 +102,9 @@ const getReviews = async (req, res) => {
     const { foodId } = req.params;
     const food = await foodModel.findById(foodId);
 
-    if (!food)
-      return res
-        .status(404)
-        .json({ success: false, message: "Food item not found" });
+    if (!food) {
+      return res.status(404).json({ success: false, message: "Food item not found" });
+    }
 
     res.json({ success: true, reviews: food.reviews || [] });
   } catch (err) {
