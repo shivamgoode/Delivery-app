@@ -5,6 +5,7 @@ import {
   removeFood,
   addReview,
   getReviews,
+  updateFood,
 } from "../controllers/foodController.js";
 import multer from "multer";
 import auth from "../middleware/auth.js";
@@ -23,6 +24,7 @@ const upload = multer({ storage: storage });
 foodRouter.post("/add", upload.single("image"), addFood);
 foodRouter.get("/list", listFood);
 foodRouter.post("/remove", removeFood);
+foodRouter.put("/update/:id", upload.single("image"), updateFood);
 
 // ================= Reviews =================
 foodRouter.post("/reviews/:foodId", auth, addReview);  // protected
