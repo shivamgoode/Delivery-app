@@ -14,6 +14,7 @@ const addFood = async (req, res) => {
       return res.status(400).json({ success: false, message: "All fields are required" });
     }
 
+    // upload to Cloudinary
     const result = await cloudinary.uploader.upload(req.file.path);
 
     const food = new foodModel({
@@ -21,8 +22,8 @@ const addFood = async (req, res) => {
       description,
       price,
       category,
-      image: req.file.filename,
-      imageUrl: result.secure_url,
+      image: req.file.filename, // local backup
+      imageUrl: result.secure_url, // main image for frontend
     });
 
     await food.save();
@@ -33,11 +34,33 @@ const addFood = async (req, res) => {
   }
 };
 
-// ==================== List Food ====================
+// ==================== List Food (Optimized) ====================
 const listFood = async (req, res) => {
   try {
-    const foods = await foodModel.find({});
-    res.json({ success: true, data: foods });
+    // pagination
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
+
+    const [foods, totalFoods] = await Promise.all([
+      foodModel
+        .find({})
+        .sort({ createdAt: -1 }) // latest first
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      foodModel.countDocuments(),
+    ]);
+
+    res.json({
+      success: true,
+      data: foods,
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(totalFoods / limit),
+        totalFoods,
+      },
+    });
   } catch (error) {
     console.error(error);
     res.json({ success: false, message: "Error" });
@@ -52,8 +75,10 @@ const removeFood = async (req, res) => {
       return res.json({ success: false, message: "Food not found" });
     }
 
+    // remove local file (if exists)
     fs.unlink(`uploads/${food.image}`, () => {});
     await foodModel.findByIdAndDelete(req.body._id);
+
     res.json({ success: true, message: "Food Removed" });
   } catch (error) {
     console.error(error);
@@ -88,7 +113,6 @@ const addReview = async (req, res) => {
     food.reviews.push(review);
 
     await food.save();
-
     res.json({ success: true, message: "Review added successfully" });
   } catch (err) {
     console.error(err);
@@ -100,7 +124,7 @@ const addReview = async (req, res) => {
 const getReviews = async (req, res) => {
   try {
     const { foodId } = req.params;
-    const food = await foodModel.findById(foodId);
+    const food = await foodModel.findById(foodId).lean();
 
     if (!food) {
       return res.status(404).json({ success: false, message: "Food item not found" });
