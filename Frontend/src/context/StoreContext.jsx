@@ -113,23 +113,21 @@ const StoreContextProvider = (props) => {
   const addReview = async (foodId, text) => {
     if (!token) return { success: false, message: "Not authenticated" };
     try {
-      // ✅ correct endpoint matching backend: /api/reviews/:foodId
       const response = await axios.post(
-        `${url}/api/food/${foodId}`,
+        `${url}/api/reviews/${foodId}`,
         { text },
         { headers: { token } }
       );
       return response.data;
     } catch (err) {
       console.error("Add review failed:", err);
-      return { success: false, message: "Failed to submit review" };
+      return { success: false, message: err.response?.data?.message || "Failed to submit review" };
     }
   };
 
   const getReviews = async (foodId) => {
     try {
-      // ✅ correct endpoint matching backend: /api/reviews/:foodId
-      const response = await axios.get(`${url}/api/food/${foodId}`);
+      const response = await axios.get(`${url}/api/reviews/${foodId}`);
       return response.data.reviews || [];
     } catch (err) {
       console.error("Get reviews failed:", err);
@@ -164,7 +162,7 @@ const StoreContextProvider = (props) => {
     discount,
     applyPromoCode,
     clearPromoCode,
-    addReview,   // ✅ review functions
+    addReview,
     getReviews
   };
 
