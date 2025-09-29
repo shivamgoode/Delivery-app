@@ -115,7 +115,7 @@ const StoreContextProvider = (props) => {
     try {
       // ✅ correct endpoint matching backend: /api/reviews/:foodId
       const response = await axios.post(
-        `${url}/api/food/reviews/${foodId}`,
+        `${url}/api/food/${foodId}`,
         { text },
         { headers: { token } }
       );
@@ -129,7 +129,7 @@ const StoreContextProvider = (props) => {
   const getReviews = async (foodId) => {
     try {
       // ✅ correct endpoint matching backend: /api/reviews/:foodId
-      const response = await axios.get(`${url}/api/food/reviews/${foodId}`);
+      const response = await axios.get(`${url}/api/food/${foodId}`);
       return response.data.reviews || [];
     } catch (err) {
       console.error("Get reviews failed:", err);
