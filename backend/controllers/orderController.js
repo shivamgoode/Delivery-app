@@ -7,7 +7,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // ----------------- Online Payment (Stripe) -----------------
 const placeOrder = async (req, res) => {
-  const frontend_url = "https://delivery-app-frontend-0yk6.onrender.com"; // ✅ removed space
+  const frontend_url = "https://delivery-app-frontend-0yk6.onrender.com";
 
   try {
     const newOrder = new orderModel({
@@ -15,7 +15,7 @@ const placeOrder = async (req, res) => {
       items: req.body.items,
       amount: req.body.amount,
       address: req.body.address,
-      payment: false, 
+      payment: false,
       paymentMethod: "online",
     });
 
@@ -30,10 +30,13 @@ const placeOrder = async (req, res) => {
         currency: "inr",
         product_data: {
           name: item.name,
-          // ✅ ensure image is a full URL or fallback
-          images: [item.image?.startsWith("http") ? item.image : `${frontend_url}/images/${item.image}`],
+          images: [
+            item.image?.startsWith("http")
+              ? item.image
+              : `${frontend_url}/images/${item.image}`,
+          ],
         },
-        unit_amount: Math.max(50, Math.round(item.price * 100)), // ✅ ensure valid amount
+        unit_amount: Math.max(50, Math.round(item.price * 100)), // min 50 paise
       },
       quantity: item.quantity,
     }));
@@ -48,7 +51,7 @@ const placeOrder = async (req, res) => {
       quantity: 1,
     });
 
-    // ✅ Stripe session
+    // Stripe session
     const session = await stripe.checkout.sessions.create({
       line_items,
       mode: "payment",
@@ -106,7 +109,11 @@ const verifyOrder = async (req, res) => {
 // ----------------- User Orders -----------------
 const userOrders = async (req, res) => {
   try {
-    const orders = await orderModel.find({ userId: req.body.userId });
+    const orders = await orderModel
+      .find({ userId: req.body.userId })
+      .sort({ createdAt: -1 }) // latest first
+      .lean();
+
     res.json({ success: true, data: orders });
   } catch (error) {
     console.error(error);
@@ -114,11 +121,33 @@ const userOrders = async (req, res) => {
   }
 };
 
-// ----------------- Admin: All Orders -----------------
+// ----------------- Admin: All Orders (Optimized) -----------------
 const listOrders = async (req, res) => {
   try {
-    const orders = await orderModel.find({});
-    res.json({ success: true, data: orders });
+    // ✅ pagination support
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
+
+    const [orders, totalOrders] = await Promise.all([
+      orderModel
+        .find({})
+        .sort({ createdAt: -1 }) // latest first
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      orderModel.countDocuments(),
+    ]);
+
+    res.json({
+      success: true,
+      data: orders,
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(totalOrders / limit),
+        totalOrders,
+      },
+    });
   } catch (error) {
     console.error(error);
     res.json({ success: false, message: "Failed to fetch orders" });
