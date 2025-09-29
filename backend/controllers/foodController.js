@@ -61,6 +61,38 @@ const removeFood = async (req, res) => {
   }
 };
 
+// ==================== Update Food ====================
+const updateFood = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, description, price, category } = req.body;
+
+    const food = await foodModel.findById(id);
+    if (!food) {
+      return res.status(404).json({ success: false, message: "Food item not found" });
+    }
+
+    // Update fields
+    if (name) food.name = name;
+    if (description) food.description = description;
+    if (price) food.price = price;
+    if (category) food.category = category;
+
+    // Handle new image if uploaded
+    if (req.file) {
+      const result = await cloudinary.uploader.upload(req.file.path);
+      food.image = req.file.filename;
+      food.imageUrl = result.secure_url;
+    }
+
+    await food.save();
+    res.json({ success: true, message: "Food updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Error updating food" });
+  }
+};
+
 // ==================== Add Review ====================
 const addReview = async (req, res) => {
   try {
@@ -114,4 +146,4 @@ const getReviews = async (req, res) => {
   }
 };
 
-export { addFood, listFood, removeFood, addReview, getReviews };
+export { addFood, listFood, removeFood, updateFood, addReview, getReviews };
