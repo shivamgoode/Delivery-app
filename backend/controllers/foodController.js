@@ -1,5 +1,4 @@
 import foodModel from "../models/foodModel.js";
-import fs from "fs";
 import { v2 as cloudinary } from "cloudinary";
 
 // ==================== Add Food ====================
@@ -14,22 +13,26 @@ const addFood = async (req, res) => {
       return res.status(400).json({ success: false, message: "All fields are required" });
     }
 
-    const result = await cloudinary.uploader.upload(req.file.path);
+    // Upload to Cloudinary
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "foods",
+      quality: "auto",
+      fetch_format: "auto",
+    });
 
     const food = new foodModel({
       name,
       description,
       price,
       category,
-      image: req.file.filename,
-      imageUrl: result.secure_url,
+      imageUrl: result.secure_url, // Only store Cloudinary URL
     });
 
     await food.save();
-    res.json({ success: true, message: "Food Added" });
+    res.json({ success: true, message: "Food Added", data: food });
   } catch (error) {
     console.error(error);
-    res.json({ success: false, message: "Error" });
+    res.status(500).json({ success: false, message: "Error adding food" });
   }
 };
 
@@ -40,7 +43,7 @@ const listFood = async (req, res) => {
     res.json({ success: true, data: foods });
   } catch (error) {
     console.error(error);
-    res.json({ success: false, message: "Error" });
+    res.status(500).json({ success: false, message: "Error fetching list" });
   }
 };
 
@@ -52,12 +55,15 @@ const removeFood = async (req, res) => {
       return res.json({ success: false, message: "Food not found" });
     }
 
-    fs.unlink(`uploads/${food.image}`, () => {});
+    // Optional: remove from Cloudinary
+    const publicId = food.imageUrl.split("/").pop().split(".")[0]; // Extract publicId
+    await cloudinary.uploader.destroy(`foods/${publicId}`);
+
     await foodModel.findByIdAndDelete(req.body._id);
     res.json({ success: true, message: "Food Removed" });
   } catch (error) {
     console.error(error);
-    res.json({ success: false, message: "Error" });
+    res.status(500).json({ success: false, message: "Error removing food" });
   }
 };
 
@@ -72,7 +78,6 @@ const updateFood = async (req, res) => {
       return res.status(404).json({ success: false, message: "Food item not found" });
     }
 
-    // Update fields
     if (name) food.name = name;
     if (description) food.description = description;
     if (price) food.price = price;
@@ -80,13 +85,16 @@ const updateFood = async (req, res) => {
 
     // Handle new image if uploaded
     if (req.file) {
-      const result = await cloudinary.uploader.upload(req.file.path);
-      food.image = req.file.filename;
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: "foods",
+        quality: "auto",
+        fetch_format: "auto",
+      });
       food.imageUrl = result.secure_url;
     }
 
     await food.save();
-    res.json({ success: true, message: "Food updated successfully" });
+    res.json({ success: true, message: "Food updated successfully", data: food });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "Error updating food" });
@@ -122,7 +130,7 @@ const addReview = async (req, res) => {
 
     await food.save();
 
-    res.json({ success: true, message: "Review added successfully" });
+    res.json({ success: true, message: "Review added successfully", reviews: food.reviews });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: "Server error" });
