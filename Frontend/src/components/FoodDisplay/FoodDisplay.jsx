@@ -1,10 +1,29 @@
 import "./FoodDisplay.css";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { StoreContext } from "../../context/StoreContext";
 import FoodItem from "../FoodItem/FoodItem";
 
 const FoodDisplay = ({ category }) => {
   const { food_list } = useContext(StoreContext);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate a loading delay or wait until food_list is fetched
+    if (Array.isArray(food_list) && food_list.length > 0) {
+      setLoading(false);
+    } else {
+      setLoading(true);
+    }
+  }, [food_list]);
+
+  if (loading) {
+    return (
+      <div className="food-display-loader">
+        <div className="loader"></div>
+        <p>Loading delicious dishes...</p>
+      </div>
+    );
+  }
 
   if (!Array.isArray(food_list) || food_list.length === 0) {
     return (
@@ -29,7 +48,6 @@ const FoodDisplay = ({ category }) => {
                 price={`${item.price}`}
                 description={item.description}
                 image={item.imageUrl}
-                imagerl={item.imageUrl}
               />
             );
           }
